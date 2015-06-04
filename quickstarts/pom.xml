@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.silverware.demos.quickstarts</groupId>
+   <artifactId>quickstarts-parent</artifactId>
+   <version>1.0-SNAPSHOT</version>
+   <packaging>pom</packaging>
+   <name>SilverWare Quickstarts Parent</name>
+   <description>Parent pom of SilverWare Quickstarts.</description>
+   <url>http://www.silverware.org</url>
+   <inceptionYear>2015</inceptionYear>
+   <developers>
+      <developer>
+         <name>Martin Večeřa</name>
+         <email>marvenec@gmail.com</email>
+         <roles>
+            <role>Owner</role>
+         </roles>
+      </developer>
+   </developers>
+   <issueManagement>
+      <url>https://github.com/px3/SilverWare-Demos/issues</url>
+      <system>github</system>
+   </issueManagement>
+   <organization>
+      <name>px3</name>
+      <url>http://www.silverware.io</url>
+   </organization>
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <java.level>1.8</java.level>
+      <version.apache.camel>2.14.1</version.apache.camel>
+      <version.maven.compiler>3.2</version.maven.compiler>
+      <version.maven.surefire>2.18.1</version.maven.surefire>
+      <version.maven.findbugs>3.0.0</version.maven.findbugs>
+      <version.maven.project.reports>2.7</version.maven.project.reports>
+      <version.maven.shade>2.3</version.maven.shade>
+   </properties>
+   <modules>
+      <module>camel-helloworld</module>
+   </modules>
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.silverware</groupId>
+            <artifactId>microservices-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-stream</artifactId>
+            <version>${version.apache.camel}</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+</project>
