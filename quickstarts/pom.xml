@@ -54,4 +54,25 @@
          </dependency>
       </dependencies>
    </dependencyManagement>
+   <build>
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>exec-maven-plugin</artifactId>
+               <version>1.4.0</version>
+               <executions>
+                  <execution>
+                     <goals>
+                        <goal>java</goal>
+                     </goals>
+                  </execution>
+               </executions>
+               <configuration>
+                  <mainClass>org.silverware.microservices.Boot</mainClass>
+               </configuration>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
 </project>
