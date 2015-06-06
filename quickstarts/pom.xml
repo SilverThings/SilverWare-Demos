@@ -29,6 +29,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.level>1.8</java.level>
       <version.apache.camel>2.14.1</version.apache.camel>
+      <version.maven.clean>2.5</version.maven.clean>
       <version.maven.compiler>3.2</version.maven.compiler>
       <version.maven.surefire>2.18.1</version.maven.surefire>
       <version.maven.findbugs>3.0.0</version.maven.findbugs>
@@ -37,6 +38,7 @@
    </properties>
    <modules>
       <module>camel-helloworld</module>
+      <module>camel-helloworld-xml</module>
    </modules>
    <dependencyManagement>
       <dependencies>
@@ -58,6 +60,14 @@
       <pluginManagement>
          <plugins>
             <plugin>
+               <artifactId>maven-compiler-plugin</artifactId>
+               <version>${version.maven.compiler}</version>
+               <configuration>
+                  <source>${java.level}</source>
+                  <target>${java.level}</target>
+               </configuration>
+            </plugin>
+            <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>exec-maven-plugin</artifactId>
                <version>1.4.0</version>
@@ -70,6 +80,54 @@
                </executions>
                <configuration>
                   <mainClass>org.silverware.microservices.Boot</mainClass>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-clean-plugin</artifactId>
+               <version>${version.maven.clean}</version>
+               <configuration>
+                  <filesets>
+                     <fileset>
+                        <directory>${basedir}</directory>
+                        <includes>
+                           <include>logs</include>
+                           <include>*.log*</include>
+                           <include>dependency-reduced-pom.xml</include>
+                        </includes>
+                        <followSymlinks>false</followSymlinks>
+                     </fileset>
+                     <fileset>
+                        <directory>${basedir}/test-output</directory>
+                     </fileset>
+                  </filesets>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-shade-plugin</artifactId>
+               <version>${version.maven.shade}</version>
+               <executions>
+                  <execution>
+                     <phase>package</phase>
+                     <goals>
+                        <goal>shade</goal>
+                     </goals>
+                     <configuration>
+                        <transformers>
+                           <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                              <mainClass>org.silverware.microservices.Boot</mainClass>
+                           </transformer>
+                        </transformers>
+                     </configuration>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <version>${version.maven.surefire}</version>
+               <configuration>
+                  <forkCount>1</forkCount>
                </configuration>
             </plugin>
          </plugins>

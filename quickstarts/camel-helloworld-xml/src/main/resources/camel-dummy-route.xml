@@ -1,0 +1,7 @@
+<routes xmlns="http://camel.apache.org/schema/spring">
+    <route id="dummy-route" streamCache="true">
+        <from uri="timer://foo?period=2000"/>
+        <to uri="log:test"/>
+        <to uri="stream:out"/>
+    </route>
+</routes>
