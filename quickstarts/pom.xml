@@ -81,7 +81,7 @@
                   </execution>
                </executions>
                <configuration>
-                  <mainClass>org.silverware.microservices.Boot</mainClass>
+                  <mainClass>io.silverware.microservices.Boot</mainClass>
                </configuration>
             </plugin>
             <plugin>
