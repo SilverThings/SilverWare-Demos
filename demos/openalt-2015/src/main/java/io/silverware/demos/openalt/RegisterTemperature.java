@@ -17,18 +17,28 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package org.silverware.demos.quickstarts.camel;
+package io.silverware.demos.openalt;
 
-import org.apache.camel.builder.RouteBuilder;
+import io.silverware.microservices.annotations.Gateway;
+import io.silverware.microservices.annotations.Microservice;
+import io.silverware.microservices.annotations.MicroserviceReference;
+import io.silverware.microservices.providers.cdi.builtin.Storage;
 
 /**
- * @author Martin Večeřa <marvenec@gmail.com>
+ * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class CamelHelloWorld extends RouteBuilder {
+@Microservice
+@Gateway
+public class RegisterTemperature {
 
-   @Override
-   public void configure() throws Exception {
-      from("timer://foo?period=2000").to("log:test").to("stream:out");
+   @MicroserviceReference
+   private Storage storage;
+
+   public void temp(int celsius) {
+      System.out.println("Temperature: " + celsius + "°C");
    }
 
+   public void hum(int relHumidity) {
+
+   }
 }
