@@ -19,40 +19,34 @@
  */
 package io.silverware.demos.openalt;
 
-import java.util.Collections;
+import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBFactory;
+import org.influxdb.dto.Point;
+
+import java.util.Map;
 import javax.inject.Inject;
 
-import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
-import io.silverware.microservices.providers.cdi.builtin.Storage;
+import io.silverware.microservices.providers.cdi.builtin.Configuration;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
 @Microservice
-@Gateway
-public class RegisterTemperature {
+public class InfluxDBWriter {
+
+   public static final String INFLUXDB_URL = "influxdb.url";
+   public static final String INFLUXDB_USER = "influxdb.user";
+   public static final String INFLUXDB_PASSWORD = "influxdb.password";
 
    @Inject
    @MicroserviceReference
-   private ValueFilter valueFilter;
+   private Configuration configuration;
 
-   @Inject
-   @MicroserviceReference
-   private InfluxDBWriter influxDBWriter;
-
-   public void temperature(final String sensorId, final int celsius) {
-      valueFilter.change(sensorId + ".temperature", celsius, t -> {
-         influxDBWriter.write("sensors", "temperature", Collections.singletonMap("value", t));
-      });
+   public void write(final String dbName, final String measurement, final Map<String, Object> fields) {
+      InfluxDB influxDB = InfluxDBFactory.connect((String) configuration.getProperty(INFLUXDB_URL), (String) configuration.getProperty(INFLUXDB_USER), (String) configuration.getProperty(INFLUXDB_PASSWORD));
+      Point p = Point.measurement(measurement).fields(fields).build();
+      influxDB.write(dbName, "default", p);
    }
-
-   public void humidity(final String sensorId, final int relHumidity) {
-      valueFilter.change(sensorId + ".humidity", relHumidity, h -> {
-         influxDBWriter.write("sensors", "humidity", Collections.singletonMap("value", h));
-      });
-
-   }
-
 }

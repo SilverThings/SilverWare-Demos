@@ -19,10 +19,9 @@
  */
 package io.silverware.demos.openalt;
 
-import java.util.Collections;
+import java.util.function.Consumer;
 import javax.inject.Inject;
 
-import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
 import io.silverware.microservices.providers.cdi.builtin.Storage;
@@ -31,28 +30,20 @@ import io.silverware.microservices.providers.cdi.builtin.Storage;
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
 @Microservice
-@Gateway
-public class RegisterTemperature {
+public class ValueFilter {
+
+   private final String STORAGE_PREFIX = ValueFilter.class.getCanonicalName() + ".";
 
    @Inject
    @MicroserviceReference
-   private ValueFilter valueFilter;
+   private Storage storage;
 
-   @Inject
-   @MicroserviceReference
-   private InfluxDBWriter influxDBWriter;
+   public <T> void change(final String valueId, final T value, final Consumer<T> consumer) {
+      Object last = storage.get(STORAGE_PREFIX + valueId);
+      if (last == null || !last.equals(value)) {
+         consumer.accept(value);
+      }
 
-   public void temperature(final String sensorId, final int celsius) {
-      valueFilter.change(sensorId + ".temperature", celsius, t -> {
-         influxDBWriter.write("sensors", "temperature", Collections.singletonMap("value", t));
-      });
+      storage.put(STORAGE_PREFIX + valueId, value);
    }
-
-   public void humidity(final String sensorId, final int relHumidity) {
-      valueFilter.change(sensorId + ".humidity", relHumidity, h -> {
-         influxDBWriter.write("sensors", "humidity", Collections.singletonMap("value", h));
-      });
-
-   }
-
 }
