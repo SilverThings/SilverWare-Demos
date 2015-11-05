@@ -19,6 +19,8 @@
  */
 package io.silverware.demos.openalt;
 
+import javax.inject.Inject;
+
 import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
@@ -31,6 +33,7 @@ import io.silverware.microservices.providers.cdi.builtin.Storage;
 @Gateway
 public class RegisterTemperature {
 
+   @Inject
    @MicroserviceReference
    private Storage storage;
 
@@ -40,5 +43,17 @@ public class RegisterTemperature {
 
    public void hum(int relHumidity) {
 
+   }
+
+   public void put() {
+      storage.put("test", "val");
+   }
+
+   public String get() {
+      return storage.get("test").toString();
+   }
+
+   public void npe() {
+      throw new NullPointerException("huhů");
    }
 }
