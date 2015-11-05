@@ -19,7 +19,7 @@ How to test
 Make sure you have sensors database created in your InfluxDB.
 
 Insert temperature data ('sensor1' is sensor name and 25 is the temperature in Celsius):
-curl -i -X POST http://localhost:8081/rest/RegisterTemperature/temperature -d '[ "sensor1", 25 ]'
+> curl -i -X POST http://localhost:8081/rest/RegisterTemperature/temperature -d '[ "sensor1", 25 ]'
 
 Insert humidity data ('sensor1' is sensor name and 75 is the relative humidity):
-curl -i -X POST http://localhost:8081/rest/RegisterTemperature/humidity -d '[ "sensor1", 75 ]'
+> curl -i -X POST http://localhost:8081/rest/RegisterTemperature/humidity -d '[ "sensor1", 75 ]'
