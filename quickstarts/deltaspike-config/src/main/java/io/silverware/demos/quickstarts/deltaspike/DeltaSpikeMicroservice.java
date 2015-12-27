@@ -17,7 +17,7 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.quickstarts.cdi;
+package io.silverware.demos.quickstarts.deltaspike;
 
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
@@ -27,6 +27,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.core.api.config.ConfigResolver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,24 +36,30 @@ import org.apache.logging.log4j.Logger;
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
 @Microservice
-public class CdiHelloWorldMicroservice {
+public class DeltaSpikeMicroservice {
 
-   private static final Logger log = LogManager.getLogger(CdiHelloWorldMicroservice.class);
+   private static final Logger log = LogManager.getLogger(DeltaSpikeMicroservice.class);
 
-   public CdiHelloWorldMicroservice() {
-      log.info("CdiHelloWorldMicroservice constructor");
+   @Inject
+   @ConfigProperty(name = "db.port", defaultValue = "3306", parameterizedBy = "db.vendor")
+   private Integer dbPort;
+
+   public DeltaSpikeMicroservice() {
+      log.info("DeltaSpikeMicroservice constructor");
    }
 
    @PostConstruct
    public void onInit() {
-      log.info("CdiHelloWorldMicroservice PostConstruct " + this.getClass().getName());
+      log.info("DeltaSpikeMicroservice PostConstruct " + this.getClass().getName());
+      Integer apiDbPort = ConfigResolver.resolve("db.port").as(Integer.class).parameterizedBy("db.vendor").withDefault(3306).getValue();
+      log.info("dbPort inject: {}, api: {}", dbPort, apiDbPort);
    }
 
    public void hello() {
-      log.info("CdiHelloWorldMicroservice Hello");
+      log.info("DeltaSpikeMicroservice Hello");
    }
 
    public void eventObserver(@Observes MicroservicesStartedEvent event) {
-      log.info("CdiHelloWorldMicroservice MicroservicesStartedEvent");
+      log.info("DeltaSpikeMicroservice MicroservicesStartedEvent");
    }
 }

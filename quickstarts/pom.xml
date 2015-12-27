@@ -29,6 +29,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.level>1.8</java.level>
       <version.apache.camel>2.14.1</version.apache.camel>
+      <version.apache.deltaspike>1.5.2</version.apache.deltaspike>
       <version.maven.clean>2.5</version.maven.clean>
       <version.maven.compiler>3.2</version.maven.compiler>
       <version.maven.surefire>2.18.1</version.maven.surefire>
@@ -42,6 +43,7 @@
       <module>cdi-helloworld</module>
       <module>camel-helloworld</module>
       <module>camel-helloworld-xml</module>
+      <module>deltaspike-config</module>
    </modules>
    <dependencyManagement>
       <dependencies>
@@ -56,6 +58,18 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-stream</artifactId>
             <version>${version.apache.camel}</version>
+         </dependency>      
+         <dependency>
+            <groupId>org.apache.deltaspike.core</groupId>
+            <artifactId>deltaspike-core-api</artifactId>
+            <version>${version.apache.deltaspike}</version>
+            <scope>compile</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.apache.deltaspike.core</groupId>
+            <artifactId>deltaspike-core-impl</artifactId>
+            <version>${version.apache.deltaspike}</version>
+            <scope>runtime</scope>
          </dependency>
       </dependencies>
    </dependencyManagement>
@@ -149,13 +163,27 @@
                </configuration>
             </plugin>
             <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>exec-maven-plugin</artifactId>
+               <configuration>
+                  <executable>java</executable>
+                  <arguments>
+                     <argument>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager</argument>
+                     <argument>-Dorg.apache.commons.logging.Log=org.apache.logging.log4j.jcl.Log4jLog</argument>
+                     <argument>-ea</argument>
+                     <argument>-jar</argument>
+                     <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+                  </arguments>
+               </configuration>
+            </plugin>
+            <plugin>
                <groupId>com.spotify</groupId>
                <artifactId>docker-maven-plugin</artifactId>
                <version>${version.maven.docker.plugin}</version>
                <configuration>
                   <imageName>silverware-qs-${project.artifactId}</imageName>
                   <baseImage>java:8</baseImage>
-                  <entryPoint>["java", "-jar", "/root/${project.build.finalName}.jar"]</entryPoint>
+                  <entryPoint>["java", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager", "org.apache.commons.logging.Log=org.apache.logging.log4j.jcl.Log4jLog", "-jar", "/root/${project.build.finalName}.jar"]</entryPoint>
                   <resources>
                      <resource>
                         <targetPath>/root/</targetPath>
