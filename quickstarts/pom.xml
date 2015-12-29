@@ -27,9 +27,12 @@
    </organization>
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      
       <java.level>1.8</java.level>
-      <version.apache.camel>2.14.1</version.apache.camel>
+      
+      <version.apache.camel>2.16.1</version.apache.camel>
       <version.apache.deltaspike>1.5.2</version.apache.deltaspike>
+
       <version.maven.clean>2.5</version.maven.clean>
       <version.maven.compiler>3.2</version.maven.compiler>
       <version.maven.surefire>2.18.1</version.maven.surefire>
@@ -44,6 +47,7 @@
       <module>camel-helloworld</module>
       <module>camel-helloworld-xml</module>
       <module>deltaspike-config</module>
+      <module>camel-cdi-helloworld</module>
    </modules>
    <dependencyManagement>
       <dependencies>
@@ -60,6 +64,11 @@
             <version>${version.apache.camel}</version>
          </dependency>      
          <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-cdi</artifactId>
+            <version>${version.apache.camel}</version>
+         </dependency>      
+         <dependency>
             <groupId>org.apache.deltaspike.core</groupId>
             <artifactId>deltaspike-core-api</artifactId>
             <version>${version.apache.deltaspike}</version>
@@ -73,6 +82,12 @@
          </dependency>
       </dependencies>
    </dependencyManagement>
+   <dependencies>
+      <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-jul</artifactId>
+      </dependency>
+   </dependencies>
    <build>
       <pluginManagement>
          <plugins>
@@ -183,7 +198,7 @@
                <configuration>
                   <imageName>silverware-qs-${project.artifactId}</imageName>
                   <baseImage>java:8</baseImage>
-                  <entryPoint>["java", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager", "org.apache.commons.logging.Log=org.apache.logging.log4j.jcl.Log4jLog", "-jar", "/root/${project.build.finalName}.jar"]</entryPoint>
+                  <entryPoint>["java", "-Dlog4j.configurationFile=log4j2.xml", "-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager", "org.apache.commons.logging.Log=org.apache.logging.log4j.jcl.Log4jLog", "-jar", "/root/${project.build.finalName}.jar"]</entryPoint>
                   <resources>
                      <resource>
                         <targetPath>/root/</targetPath>

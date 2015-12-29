@@ -17,48 +17,43 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.quickstarts.deltaspike;
+package io.silverware.demos.quickstarts.cdi;
 
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.providers.cdi.MicroservicesStartedEvent;
 
-import org.apache.deltaspike.core.api.config.ConfigProperty;
-import org.apache.deltaspike.core.api.config.ConfigResolver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-@Microservice
-public class DeltaSpikeMicroservice {
+@Microservice("camelCdiMicroservice")
+public class CamelCdiMicroservice {
 
-   private static final Logger log = LogManager.getLogger(DeltaSpikeMicroservice.class);
+   private static final Logger log = LogManager.getLogger(CamelCdiMicroservice.class);
 
-   @Inject
-   @ConfigProperty(name = "db.port", defaultValue = "3306", parameterizedBy = "db.vendor")
-   private Integer dbPort;
-
-   public DeltaSpikeMicroservice() {
-      log.info("DeltaSpikeMicroservice constructor");
+   public CamelCdiMicroservice() {
+      log.info("CamelCdiMicroservice constructor");
    }
 
    @PostConstruct
    public void onInit() {
-      log.info("DeltaSpikeMicroservice PostConstruct " + this.getClass().getName());
-      Integer apiDbPort = ConfigResolver.resolve("db.port").as(Integer.class).parameterizedBy("db.vendor").withDefault(3306).getValue();
-      log.info("dbPort inject: {}, api: {}", dbPort, apiDbPort);
+      log.info("CamelCdiMicroservice PostConstruct " + this.getClass().getName());
    }
 
    public void hello() {
-      log.info("DeltaSpikeMicroservice Hello");
+      log.info("CamelCdiMicroservice Hello");
+   }
+
+   public String sayHello(final String msg) {
+      return "Answering '" + msg + "' with 'How do you do!'";
    }
 
    public void eventObserver(@Observes MicroservicesStartedEvent event) {
-      log.info("DeltaSpikeMicroservice MicroservicesStartedEvent");
+      log.info("CamelCdiMicroservice MicroservicesStartedEvent");
    }
 }
