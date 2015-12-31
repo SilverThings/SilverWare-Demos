@@ -1,2 +1,4 @@
+Shows integration of Camel and CDI using camel-cdi component.
+
 mvn clean package
-java -jar target/cdi-helloworld-*.jar
+mvn exec:exec
