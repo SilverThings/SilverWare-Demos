@@ -9,7 +9,7 @@ It is divided into two categories:
 ## Demos
 
 * __openalt-2015__ Example showed at OpenAlt 2015 in Brno. 
-  Consists of three services - A temperature sensor register, a value filter that removes duplicates, and an InfluxDB writer. All are CDI microservices.
+  Consists of three services - a temperature sensor register, a value filter that removes duplicates, and an InfluxDB writer. All are CDI microservices.
 
 ## Quickstarts
 
