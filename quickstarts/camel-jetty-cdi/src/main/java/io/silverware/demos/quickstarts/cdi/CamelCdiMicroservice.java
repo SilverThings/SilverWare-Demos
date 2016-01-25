@@ -20,38 +20,40 @@
 package io.silverware.demos.quickstarts.cdi;
 
 import io.silverware.microservices.annotations.Microservice;
-import io.silverware.microservices.annotations.MicroserviceReference;
 import io.silverware.microservices.providers.cdi.MicroservicesStartedEvent;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Observes;
+
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-@Microservice
-public class CdiHelloWorldMicroservice {
+@Microservice("camelCdiMicroservice")
+public class CamelCdiMicroservice {
 
-   private static final Logger log = LogManager.getLogger(CdiHelloWorldMicroservice.class);
+   private static final Logger log = LogManager.getLogger(CamelCdiMicroservice.class);
 
-   public CdiHelloWorldMicroservice() {
-      log.info("CdiHelloWorldMicroservice constructor");
+   public CamelCdiMicroservice() {
+      log.info("CamelCdiMicroservice constructor");
    }
 
    @PostConstruct
    public void onInit() {
-      log.info("CdiHelloWorldMicroservice PostConstruct " + this.getClass().getName());
+      log.info("CamelCdiMicroservice PostConstruct " + this.getClass().getName());
    }
 
    public void hello() {
-      log.info("CdiHelloWorldMicroservice Hello");
+      log.info("CamelCdiMicroservice Hello");
+   }
+
+   public String sayHello(final String msg) {
+      return "Answering '" + msg + "' with 'How do you do!'";
    }
 
    public void eventObserver(@Observes MicroservicesStartedEvent event) {
-      log.info("CdiHelloWorldMicroservice MicroservicesStartedEvent");
+      log.info("CamelCdiMicroservice MicroservicesStartedEvent");
    }
 }
