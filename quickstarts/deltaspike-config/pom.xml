@@ -3,7 +3,7 @@
    <parent>
       <groupId>io.silverware.demos.quickstarts</groupId>
       <artifactId>quickstarts-parent</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
    </parent>
    <artifactId>deltaspike-config</artifactId>
    <packaging>jar</packaging>
