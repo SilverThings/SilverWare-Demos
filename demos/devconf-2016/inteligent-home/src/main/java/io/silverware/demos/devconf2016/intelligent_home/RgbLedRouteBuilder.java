@@ -22,7 +22,7 @@ package io.silverware.demos.devconf2016.intelligent_home;
 import org.apache.camel.builder.RouteBuilder;
 
 /**
- * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
+ * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
 public class RgbLedRouteBuilder extends RouteBuilder {
    @Override
@@ -45,7 +45,5 @@ public class RgbLedRouteBuilder extends RouteBuilder {
             .setHeader("channel", simple("b"))
             .process(rgbLedProcessor)
             .to("direct:pca9685-pwm-set");
-
    }
-
 }
