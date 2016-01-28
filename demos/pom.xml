@@ -39,6 +39,7 @@
    </properties>
    <modules>
       <module>openalt-2015</module>
+      <module>devconf-2016/inteligent-home</module>
    </modules>
    <dependencyManagement>
       <dependencies>
