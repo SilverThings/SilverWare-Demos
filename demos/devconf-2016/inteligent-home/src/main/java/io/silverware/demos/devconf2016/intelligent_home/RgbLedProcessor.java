@@ -53,6 +53,6 @@ public class RgbLedProcessor implements Processor {
 
       in.setHeader("address", pca9685Address);
       in.setHeader(Pca9685RouteBuilder.PWM_HEADER, pwmOutput);
-      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, in.getHeader(channel));
+      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) (40.95 * Integer.valueOf(in.getHeader(channel).toString())));
    }
 }
