@@ -50,8 +50,8 @@ public class Pca9685PwmSetProcessor implements Processor {
       i2cMsg.append(Pca9685Util.pwmAddress(pwm));
       i2cMsg.append(Pca9685Util.hex16bit(0)); // HIGH pulse start
       i2cMsg.append(Pca9685Util.hex16bit((int) (value))); // LOW pulse end
-      if (log.isInfoEnabled()) {
-         log.info("Sending I2C message: " + i2cMsg.toString());
+      if (log.isDebugEnabled()) {
+         log.debug("Sending I2C message: " + i2cMsg.toString());
       }
       msg.setBody(i2cMsg);
    }
