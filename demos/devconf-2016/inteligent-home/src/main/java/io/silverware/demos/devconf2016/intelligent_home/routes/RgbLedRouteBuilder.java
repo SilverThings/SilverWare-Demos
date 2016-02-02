@@ -44,9 +44,9 @@ public class RgbLedRouteBuilder extends RouteBuilder {
             .to("direct:led-set-batch");
 
       from("jetty:http://0.0.0.0:8282/led/setrgb?httpMethodRestrict=GET")
-            .setBody(simple("${header.led};${header.r}\n"
-                  + "${header.led};${header.g}\n"
-                  + "${header.led};${header.b}\n"
+            .setBody(simple("${header.led};r;${header.r}\n"
+                  + "${header.led};g;${header.g}\n"
+                  + "${header.led};b;${header.b}\n"
             ))
             .to("direct:led-set-batch");
    }

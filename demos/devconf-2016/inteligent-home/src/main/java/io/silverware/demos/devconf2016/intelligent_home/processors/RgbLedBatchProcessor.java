@@ -58,10 +58,10 @@ public class RgbLedBatchProcessor implements Processor {
          final int led = Integer.valueOf(parts[0]);
          final String channel = parts[1];
          final int value = Integer.valueOf(parts[2]);
-         if (log.isDebugEnabled()) {
-            log.debug("LED #: " + led);
-            log.debug("LED channel: " + channel);
-            log.debug("Value: " + value);
+         if (log.isTraceEnabled()) {
+            log.trace("LED #: " + led);
+            log.trace("LED channel: " + channel);
+            log.trace("Value: " + value);
          }
          // output message batch line "<i2c address>;<pwm output(0-15)>;<value(0-4095)>"
          if (first) {

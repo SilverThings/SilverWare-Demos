@@ -48,9 +48,9 @@ public class Pca9685PwmSetBatchProcessor implements Processor {
          }
          final String[] parts = batchLine.split(";");
          final String i2cMsg = Pca9685Util.hexMessage(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));
-         if (log.isDebugEnabled()) {
-            log.debug("I2C Address: " + parts[0]);
-            log.debug("Raw I2C Message: " + i2cMsg);
+         if (log.isTraceEnabled()) {
+            log.trace("I2C Address: " + parts[0]);
+            log.trace("Raw I2C Message: " + i2cMsg);
          }
          // output = "<i2c address>;<raw i2c hex message>"
          if (first) {
