@@ -30,7 +30,7 @@ public final class Pca9685Util {
    }
 
    public static String hex16bit(final int value) {
-      StringBuffer sb = new StringBuffer();
+      final StringBuffer sb = new StringBuffer();
       sb.append(hex(value));
       sb.append(hex(value >> 8));
       return sb.toString();
@@ -38,5 +38,13 @@ public final class Pca9685Util {
 
    public static String hex(final int value) {
       return String.format("%02X", value & 0xFF);
+   }
+
+   public static String hexMessage(final int pwm, final int value) {
+      final StringBuffer i2cMsg = new StringBuffer();
+      i2cMsg.append(Pca9685Util.pwmAddress(Math.max(0, Math.min(15, pwm))));
+      i2cMsg.append(Pca9685Util.hex16bit(0)); // HIGH pulse start
+      i2cMsg.append(Pca9685Util.hex16bit(Math.max(0, Math.min(4095, value)))); // LOW pulse end
+      return i2cMsg.toString();
    }
 }

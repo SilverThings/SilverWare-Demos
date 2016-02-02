@@ -26,23 +26,43 @@ import org.apache.camel.Processor;
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class RgbLedProcessor implements Processor {
-   private RgbLedConfig rgbLedConfig = new RgbLedConfig();
+public class AllRgbLedsProcessor implements Processor {
+   private RgbLedConfig rgbLedConfig;
+
+   public AllRgbLedsProcessor(RgbLedConfig rgbLedConfig) {
+      this.rgbLedConfig = rgbLedConfig;
+   }
 
    // input headers led=led number; channel=r, g or b; r=red value; g=green value; b=blue value;
    @Override
    public void process(final Exchange exchange) throws Exception {
       final Message in = exchange.getIn();
-      final int led = Integer.valueOf(in.getHeader("led").toString()); // 0-15
-      final String channel = in.getHeader("channel").toString(); // one of 'r', 'g' or 'b'
-      final String value = in.getHeader("value").toString(); // 0-100 [%]
+      final StringBuffer allRgbLeds = new StringBuffer();
 
-      final String pca9685Address = rgbLedConfig.getPca9685Address(led, channel);
-      if (pca9685Address == null) {
-         throw new IllegalArgumentException("The address of PCA9685 for LED #" + led + " is invalid or not defined in " + RgbLedConfig.RGB_LED_CONFIG_FILE);
+      for (int led = 0; led < RgbLedConfig.RGB_LED_COUNT; led++) {
+         if (rgbLedConfig.getRgbLed(led) != null) {
+            allRgbLeds.append(led);
+            allRgbLeds.append(";");
+            allRgbLeds.append("r");
+            allRgbLeds.append(";");
+            allRgbLeds.append(in.getHeader("r"));
+            allRgbLeds.append("\n");
+
+            allRgbLeds.append(led);
+            allRgbLeds.append(";");
+            allRgbLeds.append("g");
+            allRgbLeds.append(";");
+            allRgbLeds.append(in.getHeader("g"));
+            allRgbLeds.append("\n");
+
+            allRgbLeds.append(led);
+            allRgbLeds.append(";");
+            allRgbLeds.append("b");
+            allRgbLeds.append(";");
+            allRgbLeds.append(in.getHeader("b"));
+            allRgbLeds.append("\n");
+         }
       }
-      in.setHeader("address", pca9685Address);
-      in.setHeader(Pca9685RouteBuilder.PWM_HEADER, rgbLedConfig.getRgbLedPwm(led, channel));
-      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) (40.95 * Integer.valueOf(value)));
+      in.setBody(allRgbLeds.toString());
    }
 }

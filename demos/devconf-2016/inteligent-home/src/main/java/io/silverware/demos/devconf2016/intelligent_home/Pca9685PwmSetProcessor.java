@@ -33,25 +33,19 @@ public class Pca9685PwmSetProcessor implements Processor {
    @Override
    public void process(final Exchange exchange) throws Exception {
       Message msg = exchange.getIn();
-      StringBuffer i2cMsg = new StringBuffer();
-      // bound pwm output number to 0-15 range;
       final Object pwmHeader = msg.getHeader(Pca9685RouteBuilder.PWM_HEADER);
-      if(pwmHeader == null){
+      if (pwmHeader == null) {
          throw new RuntimeException("'pwm' header not found! Value 0 - 15 expected.");
       }
-      final int pwm = Math.max(0, Math.min(15, Integer.valueOf(pwmHeader.toString())));
-
       // bound value to 0-4095 range
       final Object valueHeader = msg.getHeader(Pca9685RouteBuilder.VALUE_HEADER);
-      if(valueHeader == null){
-         throw new RuntimeException("'value' header not found! Value 0 - 100 expected.");
+      if (valueHeader == null) {
+         throw new RuntimeException("'value' header not found! Value 0 - 4095 expected.");
       }
-      final int value = Math.max(0, Math.min(4095, Integer.valueOf(valueHeader.toString())));
-      i2cMsg.append(Pca9685Util.pwmAddress(pwm));
-      i2cMsg.append(Pca9685Util.hex16bit(0)); // HIGH pulse start
-      i2cMsg.append(Pca9685Util.hex16bit((int) (value))); // LOW pulse end
+      String i2cMsg = Pca9685Util.hexMessage(Integer.valueOf(pwmHeader.toString()), Integer.valueOf(valueHeader.toString()));
+
       if (log.isDebugEnabled()) {
-         log.debug("Sending I2C message: " + i2cMsg.toString());
+         log.debug("Sending I2C message: " + i2cMsg);
       }
       msg.setBody(i2cMsg);
    }

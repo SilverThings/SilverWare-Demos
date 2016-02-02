@@ -24,10 +24,13 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class Pca9685RestRouteBuilder extends RouteBuilder {
+public class ResetRouteBuilder extends RouteBuilder {
    @Override
    public void configure() throws Exception {
-      from("jetty:http://0.0.0.0:8282/pca9685/batch")
-            .to("direct:pca9685-pwm-set-batch");
+      final Pca9685PwmSetProcessor pca9685PwmSetProcessor = new Pca9685PwmSetProcessor();
+
+      from("jetty:http://0.0.0.0:8282/reset?httpMethodRestrict=GET")
+            .setHeader("address", simple("0x70"))
+            .to("direct:pca9685-reset");
    }
 }

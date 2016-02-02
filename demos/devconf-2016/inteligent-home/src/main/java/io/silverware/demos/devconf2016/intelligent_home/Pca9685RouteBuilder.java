@@ -31,6 +31,7 @@ public class Pca9685RouteBuilder extends RouteBuilder {
    @Override
    public void configure() throws Exception {
       final Pca9685PwmSetProcessor pca9685PwmSetProcessor = new Pca9685PwmSetProcessor();
+      final Pca9685PwmSetBatchProcessor pca9685PwmSetBatchProcessor = new Pca9685PwmSetBatchProcessor();
 
       from("direct:pca9685-reset")
             .setBody(simple("00A1")).to("bulldog:i2c")
@@ -40,5 +41,9 @@ public class Pca9685RouteBuilder extends RouteBuilder {
       from("direct:pca9685-pwm-set")
             .process(pca9685PwmSetProcessor)
             .to("bulldog:i2c");
+
+      from("direct:pca9685-pwm-set-batch")
+            .process(pca9685PwmSetBatchProcessor)
+            .to("bulldog:i2c?batch=true");
    }
 }
