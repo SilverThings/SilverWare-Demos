@@ -22,8 +22,8 @@ package io.silverware.demos.devconf2016.intelligent_home.routes;
 import org.apache.camel.builder.RouteBuilder;
 
 import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
+import io.silverware.demos.devconf2016.intelligent_home.processors.AllRgbLedsProcessor;
 import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedBatchProcessor;
-import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedProcessor;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
@@ -33,8 +33,8 @@ public class RgbLedRouteBuilder extends RouteBuilder {
 
    @Override
    public void configure() throws Exception {
-      final RgbLedProcessor rgbLedProcessor = new RgbLedProcessor();
       final RgbLedBatchProcessor rgbLedBatchProcessor = new RgbLedBatchProcessor(rgbLedConfig);
+      final AllRgbLedsProcessor allRgbLedsProcessor = new AllRgbLedsProcessor(rgbLedConfig);
 
       // direct routes
       from("direct:led-set-batch")
@@ -50,6 +50,10 @@ public class RgbLedRouteBuilder extends RouteBuilder {
                   + "${header.led};g;${header.g}\n"
                   + "${header.led};b;${header.b}\n"
             ))
+            .to("direct:led-set-batch");
+
+      from("jetty:http://0.0.0.0:8282/led/setrgb/all?httpMethodRestrict=GET")
+            .process(allRgbLedsProcessor)
             .to("direct:led-set-batch");
    }
 }
