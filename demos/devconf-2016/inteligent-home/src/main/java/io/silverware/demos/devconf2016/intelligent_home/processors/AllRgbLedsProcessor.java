@@ -17,11 +17,13 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.devconf2016.intelligent_home;
+package io.silverware.demos.devconf2016.intelligent_home.processors;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
+
+import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>

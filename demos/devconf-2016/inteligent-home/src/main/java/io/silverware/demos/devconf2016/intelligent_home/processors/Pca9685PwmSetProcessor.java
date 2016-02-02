@@ -17,12 +17,15 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.devconf2016.intelligent_home;
+package io.silverware.demos.devconf2016.intelligent_home.processors;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
+
+import io.silverware.demos.devconf2016.intelligent_home.routes.Pca9685RouteBuilder;
+import io.silverware.demos.devconf2016.intelligent_home.Pca9685Util;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>

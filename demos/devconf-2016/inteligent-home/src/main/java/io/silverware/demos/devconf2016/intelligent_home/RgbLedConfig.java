@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import io.silverware.demos.devconf2016.intelligent_home.model.Channel;
 import io.silverware.demos.devconf2016.intelligent_home.model.RgbLed;
+import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedProcessor;
 
 /**
  * Created by pmacik on 1.2.16.

@@ -17,17 +17,30 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.devconf2016.intelligent_home;
+package io.silverware.demos.devconf2016.intelligent_home.processors;
 
-import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.Exchange;
+import org.apache.camel.Message;
+import org.apache.camel.Processor;
+
+import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class Pca9685RestRouteBuilder extends RouteBuilder {
+public class RgbLedPostSplitProcessor implements Processor {
+   private RgbLedConfig rgbLedConfig;
+
+   public RgbLedPostSplitProcessor(RgbLedConfig rgbLedConfig) {
+      this.rgbLedConfig = rgbLedConfig;
+   }
+
    @Override
-   public void configure() throws Exception {
-      from("jetty:http://0.0.0.0:8282/pca9685/batch")
-            .to("direct:pca9685-pwm-set-batch");
+   public void process(final Exchange exchange) throws Exception {
+      final Message in = exchange.getIn();
+      final String[] msg = in.getBody().toString().split(";");
+      in.setHeader("led", msg[0]);
+      in.setHeader("channel", msg[1]);
+      in.setHeader("value", msg[2]);
    }
 }

@@ -17,62 +17,51 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.devconf2016.intelligent_home;
+package io.silverware.demos.devconf2016.intelligent_home.processors;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
 
+import io.silverware.demos.devconf2016.intelligent_home.Pca9685Util;
+
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class RgbLedBatchProcessor implements Processor {
-
-   private Logger log = Logger.getLogger(RgbLedBatchProcessor.class);
-
-   private RgbLedConfig rgbLedConfig = new RgbLedConfig();
-
-   public RgbLedBatchProcessor(RgbLedConfig rgbLedConfig) {
-      super();
-      this.rgbLedConfig = rgbLedConfig;
-   }
+public class Pca9685PwmSetBatchProcessor implements Processor {
+   private static final Logger log = Logger.getLogger(Pca9685PwmSetBatchProcessor.class);
 
    @Override
    public void process(final Exchange exchange) throws Exception {
       final Message msg = exchange.getIn();
-      final StringBuffer pwmBatch = new StringBuffer();
+      final StringBuffer i2cBatch = new StringBuffer();
 
       final String[] batchLines = msg.getBody(String.class).split("\n");
 
       boolean first = true;
       for (String batchLine : batchLines) {
-         // input message batch line "<led>;<channel(r,g,b)>;<value(0-100)>"
+         // input message batch line "<i2c address>;<pwm output(0-15)>;<value(0-4095)>"
          //TODO: add batch line format validation
          if (log.isDebugEnabled()) {
             log.debug("Batch line: " + batchLine);
          }
          final String[] parts = batchLine.split(";");
-         final int led = Integer.valueOf(parts[0]);
-         final String channel = parts[1];
-         final int value = Integer.valueOf(parts[2]);
+         final String i2cMsg = Pca9685Util.hexMessage(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));
          if (log.isDebugEnabled()) {
-            log.debug("LED #: " + led);
-            log.debug("LED channel: " + channel);
-            log.debug("Value: " + value);
+            log.debug("I2C Address: " + parts[0]);
+            log.debug("Raw I2C Message: " + i2cMsg);
          }
-         // output message batch line "<i2c address>;<pwm output(0-15)>;<value(0-4095)>"
+         // output = "<i2c address>;<raw i2c hex message>"
          if (first) {
             first = false;
          } else {
-            pwmBatch.append("\n");
+            i2cBatch.append("\n");
          }
-         pwmBatch.append(rgbLedConfig.getPca9685Address(led, channel)); // I2C address
-         pwmBatch.append(";");
-         pwmBatch.append(rgbLedConfig.getRgbLedPwm(led, channel)); // pwm output
-         pwmBatch.append(";");
-         pwmBatch.append(Integer.valueOf((int) (40.95 * value))); // pwm value
+         i2cBatch.append(parts[0]); // address
+         i2cBatch.append(";");
+         i2cBatch.append(i2cMsg);
       }
-      msg.setBody(pwmBatch.toString());
+      msg.setBody(i2cBatch.toString());
    }
 }

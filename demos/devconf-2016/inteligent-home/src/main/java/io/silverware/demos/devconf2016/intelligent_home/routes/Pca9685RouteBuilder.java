@@ -17,20 +17,36 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.devconf2016.intelligent_home;
+package io.silverware.demos.devconf2016.intelligent_home.routes;
 
 import org.apache.camel.builder.RouteBuilder;
+
+import io.silverware.demos.devconf2016.intelligent_home.processors.Pca9685PwmSetBatchProcessor;
+import io.silverware.demos.devconf2016.intelligent_home.processors.Pca9685PwmSetProcessor;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class ResetRouteBuilder extends RouteBuilder {
+public class Pca9685RouteBuilder extends RouteBuilder {
+   public static final String PWM_HEADER = "pwm";
+   public static final String VALUE_HEADER = "value";
+
    @Override
    public void configure() throws Exception {
       final Pca9685PwmSetProcessor pca9685PwmSetProcessor = new Pca9685PwmSetProcessor();
+      final Pca9685PwmSetBatchProcessor pca9685PwmSetBatchProcessor = new Pca9685PwmSetBatchProcessor();
 
-      from("jetty:http://0.0.0.0:8282/reset?httpMethodRestrict=GET")
-            .setHeader("address", simple("0x70"))
-            .to("direct:pca9685-reset");
+      from("direct:pca9685-reset")
+            .setBody(simple("00A1")).to("bulldog:i2c")
+            .setBody(simple("0104")).to("bulldog:i2c")
+            .setBody(simple("FC0010")).to("bulldog:i2c");
+
+      from("direct:pca9685-pwm-set")
+            .process(pca9685PwmSetProcessor)
+            .to("bulldog:i2c");
+
+      from("direct:pca9685-pwm-set-batch")
+            .process(pca9685PwmSetBatchProcessor)
+            .to("bulldog:i2c?batch=true");
    }
 }

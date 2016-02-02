@@ -17,9 +17,13 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.devconf2016.intelligent_home;
+package io.silverware.demos.devconf2016.intelligent_home.routes;
 
 import org.apache.camel.builder.RouteBuilder;
+
+import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
+import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedBatchProcessor;
+import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedProcessor;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
@@ -32,38 +36,18 @@ public class RgbLedRouteBuilder extends RouteBuilder {
       final RgbLedProcessor rgbLedProcessor = new RgbLedProcessor();
       final RgbLedBatchProcessor rgbLedBatchProcessor = new RgbLedBatchProcessor(rgbLedConfig);
 
-      //final RgbLedPostSplitProcessor rgbLedPostSplitProcessor = new RgbLedPostSplitProcessor(rgbLedConfig);
-      //final AllRgbLedsProcessor allRgbLedsProcessor = new AllRgbLedsProcessor(rgbLedConfig);
-
-      // HTTP query led, r, g, b required
-     /* from("jetty:http://0.0.0.0:8282/led/setrgb")
-            // set R channel value
-            .setHeader("channel", simple("r"))
-            .setHeader("value", simple("${header.r}"))
-            .process(rgbLedProcessor)
-            .to("direct:pca9685-pwm-set")
-
-            // set G channel value
-            .setHeader("channel", simple("g"))
-            .setHeader("value", simple("${header.g}"))
-            .process(rgbLedProcessor)
-            .to("direct:pca9685-pwm-set")
-
-            // set B channel value
-            .setHeader("channel", simple("b"))
-            .setHeader("value", simple("${header.b}"))
-            .process(rgbLedProcessor)
-            .to("direct:pca9685-pwm-set");*/
-
-      from("jetty:http://0.0.0.0:8282/led/batch")
+      from("direct:led-set-batch")
             .process(rgbLedBatchProcessor)
             .to("direct:pca9685-pwm-set-batch");
 
-      /*from("jetty:http://0.0.0.0:8282/led/setrgb/all")
-            .process(allRgbLedsProcessor)
-            .split(body().tokenize("\n"))
-            .process(rgbLedPostSplitProcessor)
-            .process(rgbLedProcessor)
-            .to("direct:pca9685-pwm-set");*/
+      from("jetty:http://0.0.0.0:8282/led/batch?httpMethodRestrict=POST")
+            .to("direct:led-set-batch");
+
+      from("jetty:http://0.0.0.0:8282/led/setrgb?httpMethodRestrict=GET")
+            .setBody(simple("${header.led};${header.r}\n"
+                  + "${header.led};${header.g}\n"
+                  + "${header.led};${header.b}\n"
+            ))
+            .to("direct:led-set-batch");
    }
 }
