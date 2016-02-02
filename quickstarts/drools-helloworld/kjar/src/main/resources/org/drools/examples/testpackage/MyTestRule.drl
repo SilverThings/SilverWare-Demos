@@ -1,0 +1,10 @@
+package org.drools.examples.testpackage
+
+import java.lang.String;
+
+rule "rule 1"
+when
+	$s : String()
+then
+	System.out.println("Firing:" + $s);
+end
