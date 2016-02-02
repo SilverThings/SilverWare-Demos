@@ -19,40 +19,35 @@
  */
 package io.silverware.demos.devconf2016.intelligent_home.routes;
 
-import org.apache.camel.builder.RouteBuilder;
-
-import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
 import io.silverware.demos.devconf2016.intelligent_home.processors.AllRgbLedsProcessor;
 import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedBatchProcessor;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class RgbLedRouteBuilder extends RouteBuilder {
-   private RgbLedConfig rgbLedConfig = new RgbLedConfig();
-
+public class RgbLedRouteBuilder extends IntelligentHomeRouteBuilder {
    @Override
    public void configure() throws Exception {
-      final RgbLedBatchProcessor rgbLedBatchProcessor = new RgbLedBatchProcessor(rgbLedConfig);
-      final AllRgbLedsProcessor allRgbLedsProcessor = new AllRgbLedsProcessor(rgbLedConfig);
+      final RgbLedBatchProcessor rgbLedBatchProcessor = new RgbLedBatchProcessor(config);
+      final AllRgbLedsProcessor allRgbLedsProcessor = new AllRgbLedsProcessor(config);
 
       // direct routes
       from("direct:led-set-batch")
             .process(rgbLedBatchProcessor)
             .to("direct:pca9685-pwm-set-batch");
 
-      from("jetty:http://0.0.0.0:8282/led/batch?httpMethodRestrict=POST")
+      // REST API routes
+      from(restBaseUri() + "/led/batch?httpMethodRestrict=POST")
             .to("direct:led-set-batch");
 
-      // REST API routes
-      from("jetty:http://0.0.0.0:8282/led/setrgb?httpMethodRestrict=GET")
+      from(restBaseUri() + "/led/setrgb?httpMethodRestrict=GET")
             .setBody(simple("${header.led};r;${header.r}\n"
                   + "${header.led};g;${header.g}\n"
                   + "${header.led};b;${header.b}\n"
             ))
             .to("direct:led-set-batch");
 
-      from("jetty:http://0.0.0.0:8282/led/setrgb/all?httpMethodRestrict=GET")
+      from(restBaseUri() + "/led/setrgb/all?httpMethodRestrict=GET")
             .process(allRgbLedsProcessor)
             .to("direct:led-set-batch");
    }

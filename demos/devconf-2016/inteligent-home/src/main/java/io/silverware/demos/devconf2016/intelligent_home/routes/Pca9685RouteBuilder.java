@@ -19,15 +19,13 @@
  */
 package io.silverware.demos.devconf2016.intelligent_home.routes;
 
-import org.apache.camel.builder.RouteBuilder;
-
 import io.silverware.demos.devconf2016.intelligent_home.processors.Pca9685PwmSetBatchProcessor;
 import io.silverware.demos.devconf2016.intelligent_home.processors.Pca9685PwmSetProcessor;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class Pca9685RouteBuilder extends RouteBuilder {
+public class Pca9685RouteBuilder extends IntelligentHomeRouteBuilder {
    public static final String PWM_HEADER = "pwm";
    public static final String VALUE_HEADER = "value";
 
@@ -51,7 +49,7 @@ public class Pca9685RouteBuilder extends RouteBuilder {
             .to("bulldog:i2c?batch=true");
 
       // REST API routes
-      from("jetty:http://0.0.0.0:8282/pca9685/batch?httpMethodRestrict=POST")
+      from(restBaseUri() + "/pca9685/batch?httpMethodRestrict=POST")
             .to("direct:pca9685-pwm-set-batch");
    }
 }

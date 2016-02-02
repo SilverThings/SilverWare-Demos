@@ -10,7 +10,9 @@ import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedProcess
 /**
  * Created by pmacik on 1.2.16.
  */
-public class RgbLedConfig {
+public final class Configuration {
+
+   private static final Configuration INSTANCE = new Configuration();
 
    private static final String LED_PCA9685_PREFIX = "pca9685";
    private static final String LED_PREFIX = "led";
@@ -18,16 +20,16 @@ public class RgbLedConfig {
    public static final int RGB_LED_COUNT = 16;
    public static final int PCA9685_COUNT = 3;
 
-   public static final String RGB_LED_CONFIG_FILE = "/rgbLed.properties";
+   public static final String CONFIG_FILE = "/home.conf";
 
    private final String[] pca9685s = new String[PCA9685_COUNT];
    private final RgbLed[] rgbLeds = new RgbLed[RGB_LED_COUNT];
 
-   private final Properties rgbLedProperties = new Properties();
+   private final Properties homeConfig = new Properties();
 
-   public RgbLedConfig() {
+   private Configuration() {
       try {
-         rgbLedProperties.load(RgbLedProcessor.class.getResourceAsStream(RGB_LED_CONFIG_FILE));
+         homeConfig.load(RgbLedProcessor.class.getResourceAsStream(CONFIG_FILE));
          final String[] channelNames = new String[] { "r", "g", "b" };
 
          // for all leds in config
@@ -35,12 +37,12 @@ public class RgbLedConfig {
 
             for (int ch = 0; ch < 3; ch++) {
                final String channel = channelNames[ch];
-               final String rgbLedProp = rgbLedProperties.getProperty(LED_PREFIX + "." + led + "." + channel);
+               final String rgbLedProp = homeConfig.getProperty(LED_PREFIX + "." + led + "." + channel);
 
                if (rgbLedProp != null) {
                   final String[] ledCoordinates = rgbLedProp.split(";");
                   final int pca9685Id = Integer.valueOf(ledCoordinates[0]);
-                  final String pca9685Address = rgbLedProperties.getProperty(LED_PCA9685_PREFIX + "." + pca9685Id);
+                  final String pca9685Address = homeConfig.getProperty(LED_PCA9685_PREFIX + "." + pca9685Id);
 
                   if (pca9685Address != null) {
                      if (pca9685s[pca9685Id] == null) {
@@ -60,6 +62,10 @@ public class RgbLedConfig {
       } catch (IOException e) {
          e.printStackTrace();
       }
+   }
+
+   public static Configuration getInstance() {
+      return INSTANCE;
    }
 
    public String getPca9685Address(int led, String channel) {
@@ -87,5 +93,25 @@ public class RgbLedConfig {
 
    public RgbLed getRgbLed(int led) {
       return rgbLeds[led];
+   }
+
+   public String getSensorAddress() {
+      return homeConfig.getProperty("dht11.address");
+   }
+
+   public String getFanGpioPin() {
+      return homeConfig.getProperty("fan.gpio");
+   }
+
+   public String getFireplaceGpioPin() {
+      return homeConfig.getProperty("fireplace.gpio");
+   }
+
+   public String getRestHost() {
+      return homeConfig.getProperty("rest.host", "0.0.0.0");
+   }
+
+   public String getRestPort() {
+      return homeConfig.getProperty("rest.port", "8282");
    }
 }

@@ -24,7 +24,7 @@ import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
 
-import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
+import io.silverware.demos.devconf2016.intelligent_home.Configuration;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
@@ -33,11 +33,11 @@ public class RgbLedBatchProcessor implements Processor {
 
    private static final Logger log = Logger.getLogger(RgbLedBatchProcessor.class);
 
-   private RgbLedConfig rgbLedConfig = new RgbLedConfig();
+   private Configuration config = Configuration.getInstance();
 
-   public RgbLedBatchProcessor(RgbLedConfig rgbLedConfig) {
+   public RgbLedBatchProcessor(Configuration config) {
       super();
-      this.rgbLedConfig = rgbLedConfig;
+      this.config = config;
    }
 
    @Override
@@ -69,9 +69,9 @@ public class RgbLedBatchProcessor implements Processor {
          } else {
             pwmBatch.append("\n");
          }
-         pwmBatch.append(rgbLedConfig.getPca9685Address(led, channel)); // I2C address
+         pwmBatch.append(config.getPca9685Address(led, channel)); // I2C address
          pwmBatch.append(";");
-         pwmBatch.append(rgbLedConfig.getRgbLedPwm(led, channel)); // pwm output
+         pwmBatch.append(config.getRgbLedPwm(led, channel)); // pwm output
          pwmBatch.append(";");
          pwmBatch.append(Integer.valueOf((int) (40.95 * value))); // pwm value
       }

@@ -19,19 +19,18 @@
  */
 package io.silverware.demos.devconf2016.intelligent_home.routes;
 
-import org.apache.camel.builder.RouteBuilder;
-
 import io.silverware.demos.devconf2016.intelligent_home.processors.Pca9685PwmSetProcessor;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class ResetRouteBuilder extends RouteBuilder {
+public class ResetRouteBuilder extends IntelligentHomeRouteBuilder {
+
    @Override
    public void configure() throws Exception {
       final Pca9685PwmSetProcessor pca9685PwmSetProcessor = new Pca9685PwmSetProcessor();
 
-      from("jetty:http://0.0.0.0:8282/reset?httpMethodRestrict=GET")
+      from(restBaseUri() + "/reset?httpMethodRestrict=GET")
             .setHeader("address", simple("0x70"))
             .to("direct:pca9685-reset");
    }

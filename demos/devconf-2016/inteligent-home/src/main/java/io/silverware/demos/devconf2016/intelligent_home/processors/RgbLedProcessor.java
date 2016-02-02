@@ -23,14 +23,14 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 
+import io.silverware.demos.devconf2016.intelligent_home.Configuration;
 import io.silverware.demos.devconf2016.intelligent_home.routes.Pca9685RouteBuilder;
-import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
 public class RgbLedProcessor implements Processor {
-   private RgbLedConfig rgbLedConfig = new RgbLedConfig();
+   private Configuration config = Configuration.getInstance();
 
    // input headers led=led number; channel=r, g or b; r=red value; g=green value; b=blue value;
    @Override
@@ -40,12 +40,12 @@ public class RgbLedProcessor implements Processor {
       final String channel = in.getHeader("channel").toString(); // one of 'r', 'g' or 'b'
       final String value = in.getHeader("value").toString(); // 0-100 [%]
 
-      final String pca9685Address = rgbLedConfig.getPca9685Address(led, channel);
+      final String pca9685Address = config.getPca9685Address(led, channel);
       if (pca9685Address == null) {
-         throw new IllegalArgumentException("The address of PCA9685 for LED #" + led + " is invalid or not defined in " + RgbLedConfig.RGB_LED_CONFIG_FILE);
+         throw new IllegalArgumentException("The address of PCA9685 for LED #" + led + " is invalid or not defined in " + Configuration.CONFIG_FILE);
       }
       in.setHeader("address", pca9685Address);
-      in.setHeader(Pca9685RouteBuilder.PWM_HEADER, rgbLedConfig.getRgbLedPwm(led, channel));
+      in.setHeader(Pca9685RouteBuilder.PWM_HEADER, config.getRgbLedPwm(led, channel));
       in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) (40.95 * Integer.valueOf(value)));
    }
 }

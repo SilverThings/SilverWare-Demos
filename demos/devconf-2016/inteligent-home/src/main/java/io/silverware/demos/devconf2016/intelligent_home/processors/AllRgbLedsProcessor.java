@@ -24,7 +24,7 @@ import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.log4j.Logger;
 
-import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
+import io.silverware.demos.devconf2016.intelligent_home.Configuration;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
@@ -32,10 +32,10 @@ import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
 public class AllRgbLedsProcessor implements Processor {
    private static final Logger log = Logger.getLogger(AllRgbLedsProcessor.class);
 
-   private RgbLedConfig rgbLedConfig;
+   private Configuration config = Configuration.getInstance();
 
-   public AllRgbLedsProcessor(RgbLedConfig rgbLedConfig) {
-      this.rgbLedConfig = rgbLedConfig;
+   public AllRgbLedsProcessor(Configuration config) {
+      this.config = config;
    }
 
    // input headers r=red value; g=green value; b=blue value;
@@ -46,10 +46,10 @@ public class AllRgbLedsProcessor implements Processor {
       final String[] channels = new String[] { "r", "g", "b" };
 
       boolean first = true;
-      for (int led = 0; led < RgbLedConfig.RGB_LED_COUNT; led++) {
-         if (rgbLedConfig.getRgbLed(led) != null) {
+      for (int led = 0; led < Configuration.RGB_LED_COUNT; led++) {
+         if (config.getRgbLed(led) != null) {
             for (String channel : channels) {
-               if (rgbLedConfig.getRgbLedPwm(led, channel) >= 0) {
+               if (config.getRgbLedPwm(led, channel) >= 0) {
                   if (first) {
                      first = false;
                   } else {
