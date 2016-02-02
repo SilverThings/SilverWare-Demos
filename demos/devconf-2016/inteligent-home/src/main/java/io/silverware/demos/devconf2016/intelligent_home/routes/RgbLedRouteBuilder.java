@@ -36,6 +36,7 @@ public class RgbLedRouteBuilder extends RouteBuilder {
       final RgbLedProcessor rgbLedProcessor = new RgbLedProcessor();
       final RgbLedBatchProcessor rgbLedBatchProcessor = new RgbLedBatchProcessor(rgbLedConfig);
 
+      // direct routes
       from("direct:led-set-batch")
             .process(rgbLedBatchProcessor)
             .to("direct:pca9685-pwm-set-batch");
@@ -43,6 +44,7 @@ public class RgbLedRouteBuilder extends RouteBuilder {
       from("jetty:http://0.0.0.0:8282/led/batch?httpMethodRestrict=POST")
             .to("direct:led-set-batch");
 
+      // REST API routes
       from("jetty:http://0.0.0.0:8282/led/setrgb?httpMethodRestrict=GET")
             .setBody(simple("${header.led};r;${header.r}\n"
                   + "${header.led};g;${header.g}\n"

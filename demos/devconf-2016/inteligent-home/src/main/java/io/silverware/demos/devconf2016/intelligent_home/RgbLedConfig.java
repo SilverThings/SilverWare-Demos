@@ -76,7 +76,12 @@ public class RgbLedConfig {
       if (rgbLed == null) {
          return -1;
       } else {
-         return rgbLed.getChannelMap().get(channel).getPwm();
+         Channel ch = rgbLed.getChannelMap().get(channel);
+         if (ch == null) {
+            return -1;
+         } else {
+            return ch.getPwm();
+         }
       }
    }
 

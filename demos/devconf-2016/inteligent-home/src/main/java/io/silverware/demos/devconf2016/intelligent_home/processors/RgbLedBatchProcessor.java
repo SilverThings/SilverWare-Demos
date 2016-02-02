@@ -31,7 +31,7 @@ import io.silverware.demos.devconf2016.intelligent_home.RgbLedConfig;
  */
 public class RgbLedBatchProcessor implements Processor {
 
-   private Logger log = Logger.getLogger(RgbLedBatchProcessor.class);
+   private static final Logger log = Logger.getLogger(RgbLedBatchProcessor.class);
 
    private RgbLedConfig rgbLedConfig = new RgbLedConfig();
 
