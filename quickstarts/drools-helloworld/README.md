@@ -14,8 +14,10 @@ Then start SilverWare quickstart by
 `> java -jar app/target/drools-helloworld-*.jar`
 
 See the following output showing that the rules were fired:
-```2016-02-02 22:12:23,598 INFO  {io.silverware.demos.quickstarts.drools.DroolsHelloWorldMicroservice} DroolsHelloWorldMicroservice constructor
+```
+2016-02-02 22:12:23,598 INFO  {io.silverware.demos.quickstarts.drools.DroolsHelloWorldMicroservice} DroolsHelloWorldMicroservice constructor
 2016-02-02 22:12:24,486 INFO  {io.silverware.demos.quickstarts.drools.DroolsHelloWorldMicroservice} DroolsHelloWorldMicroservice MicroservicesStartedEvent KieSession[0]
 Firing:test
-2016-02-02 22:12:24,520 INFO  {io.silverware.demos.quickstarts.drools.DroolsHelloWorldMicroservice} Fired!```
+2016-02-02 22:12:24,520 INFO  {io.silverware.demos.quickstarts.drools.DroolsHelloWorldMicroservice} Fired!
+```
 
