@@ -28,7 +28,7 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.level>1.8</java.level>
-      <version.apache.camel>2.14.1</version.apache.camel>
+      <version.apache.camel>2.16.1</version.apache.camel>
       <version.maven.clean>2.5</version.maven.clean>
       <version.maven.compiler>3.2</version.maven.compiler>
       <version.maven.surefire>2.18.1</version.maven.surefire>
@@ -40,6 +40,7 @@
    <modules>
       <module>openalt-2015</module>
       <module>devconf-2016/inteligent-home</module>
+      <module>devconf-2016/gateway</module>
    </modules>
    <dependencyManagement>
       <dependencies>
