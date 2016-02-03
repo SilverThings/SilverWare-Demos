@@ -21,12 +21,15 @@ Sets the brightness of R G B channels of the specified LED to give light with a 
 
 #### Examples:
 * To turn the LED #1 completely off
+
 > GET [/led/setrgb?led=1&r=0&g=0&b=0]()
 
 * To turn the LED #1 on with full brightness of all channels
+
 > GET [/led/setrgb?led=1&r=100&g=100&b=100]()
 
 * To set the LED #1's brightness to R=0%, G=25% and B=80%
+
 > GET [/led/setrgb?led=1&r=0&g=25&b=80]()
 
 ### GET [/led/setrgb/all]()
@@ -38,12 +41,15 @@ Sets the brightness of R G B channels of all LEDs to give light with a particula
 
 #### Examples:
 * To turn all the LEDs completely off
+
 > GET [/led/setrgb/all?r=0&g=0&b=0]()
 
 * To turn all the LEDs on with full brightness of all channels
+
 > GET [/led/setrgb?led=1&r=100&g=100&b=100]()
 
 * To set all the LEDs brightness to R=0%, G=25% and B=80%
+
 > GET [/led/setrgb?led=1&r=0&g=25&b=80]()
 
 ### POST [/led/batch]()
@@ -102,6 +108,7 @@ Return the current temperature [°C] and humidity [%] measured by the [DHT11](ht
 
 #### Examples:
 * To get the current sensor data
+
 > GET [/sensorData]()
 
 The returned JSON object with temperature of 24 °C and humidity of 33 % looks like:
