@@ -26,6 +26,11 @@
          <version>${version.apache.camel}</version>
       </dependency>
       <dependency>
+         <groupId>org.apache.camel</groupId>
+         <artifactId>camel-jackson</artifactId>
+         <version>${version.apache.camel}</version>
+      </dependency>
+      <dependency>
          <groupId>io.silverspoon</groupId>
          <artifactId>camel-bulldog</artifactId>
          <version>${version.silverspoon}</version>

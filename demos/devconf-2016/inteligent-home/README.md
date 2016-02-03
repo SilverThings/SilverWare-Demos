@@ -97,6 +97,23 @@ The batch is a set of instructions in the format of `<led>;<channel>;<value>` ea
 10;b;0
 ```
 
+### GET [/sensorData]()
+Return the current temperature [°C] and humidity [%] measured by the [DHT11](https://www.adafruit.com/product/386) exposed over I<sup>2</sup>C bus in JSON format.
+
+#### Examples:
+* To get the current sensor data
+> GET [/sensorData]()
+
+The returned JSON object with temperature of 24 °C and humidity of 33 % looks like:
+```json
+{
+  "sensorName" : "LivingRoom",
+  "temperature" : 24,
+  "humidity" : 33,
+  "timestamp" : "2016-02-03 14:36:19"
+}
+```
+
 ## Internal REST API
 ### POST [/pca9685/batch]()
 Similar to (and used by) [/led/batch]() to set the PWM value (0-4095) of one or more [PCA9685](https://www.adafruit.com/product/815) LED drivers to a specified value.

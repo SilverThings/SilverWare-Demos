@@ -35,11 +35,6 @@ public class RgbLedBatchProcessor implements Processor {
 
    private Configuration config = Configuration.getInstance();
 
-   public RgbLedBatchProcessor(Configuration config) {
-      super();
-      this.config = config;
-   }
-
    @Override
    public void process(final Exchange exchange) throws Exception {
       final Message msg = exchange.getIn();

@@ -28,8 +28,8 @@ import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedBatchPr
 public class RgbLedRouteBuilder extends IntelligentHomeRouteBuilder {
    @Override
    public void configure() throws Exception {
-      final RgbLedBatchProcessor rgbLedBatchProcessor = new RgbLedBatchProcessor(config);
-      final AllRgbLedsProcessor allRgbLedsProcessor = new AllRgbLedsProcessor(config);
+      final RgbLedBatchProcessor rgbLedBatchProcessor = new RgbLedBatchProcessor();
+      final AllRgbLedsProcessor allRgbLedsProcessor = new AllRgbLedsProcessor();
 
       // direct routes
       from("direct:led-set-batch")

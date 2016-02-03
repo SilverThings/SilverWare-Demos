@@ -34,10 +34,6 @@ public class AllRgbLedsProcessor implements Processor {
 
    private Configuration config = Configuration.getInstance();
 
-   public AllRgbLedsProcessor(Configuration config) {
-      this.config = config;
-   }
-
    // input headers r=red value; g=green value; b=blue value;
    @Override
    public void process(final Exchange exchange) throws Exception {
