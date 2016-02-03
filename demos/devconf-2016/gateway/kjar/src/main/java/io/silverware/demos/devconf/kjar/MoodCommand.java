@@ -17,21 +17,49 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.quickstarts.cdi;
-
-import org.apache.camel.builder.RouteBuilder;
+package io.silverware.demos.devconf.kjar;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class CamelCdiRoute extends RouteBuilder {
+public class MoodCommand {
 
-   @Override
-   public void configure() throws Exception {
-      from("timer://foo?period=2000")
-         .setBody().simple("Hello from Camel Timer!")
-         .bean("camelCdiMicroservice", "sayHello")
-         .to("log:test").to("stream:out");
+   public enum Mood {
+      SLEEP, ROMANTIC, ALERT, DAY
    }
 
+   private Mood mood;
+
+   public MoodCommand(final Mood mood) {
+      this.mood = mood;
+   }
+
+   public Mood getMood() {
+      return mood;
+   }
+
+   @Override
+   public boolean equals(final Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+
+      final MoodCommand that = (MoodCommand) o;
+
+      return mood == that.mood;
+
+   }
+
+   @Override
+   public int hashCode() {
+      return mood.hashCode();
+   }
+
+   @Override
+   public String toString() {
+      return "M" + mood.ordinal();
+   }
 }

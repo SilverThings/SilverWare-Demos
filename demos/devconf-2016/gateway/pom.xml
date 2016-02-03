@@ -16,8 +16,6 @@
       <module>kjar</module>
    </modules>
    <dependencyManagement>
-      <dependencies>
-      </dependencies>
    </dependencyManagement>
    <build>
       <pluginManagement>

@@ -1,10 +1,20 @@
 package org.drools.examples.testpackage
 
 import java.lang.String;
+import java.util.List;
+import io.silverware.demos.devconf.kjar.*;
 
-rule "rule 1"
+global java.util.List commands;
+
+declare MoodCommand
+  @expires( 2m )
+  @role( event )
+end
+
+rule "Mood command"
 when
-	$s : String()
+   $mood: MoodCommand(mood == Mood.ROMANTIC) from entry-point "acutors"
 then
-	System.out.println("Firing:" + $s);
+   System.out.println("Processing mood");
+   commands.add(new String("L0;r;0\n0;g;70\n0;b;80"));
 end

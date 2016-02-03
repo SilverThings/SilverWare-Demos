@@ -17,21 +17,10 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.quickstarts.cdi;
-
-import org.apache.camel.builder.RouteBuilder;
+package io.silverware.demos.devconf.kjar;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class CamelCdiRoute extends RouteBuilder {
-
-   @Override
-   public void configure() throws Exception {
-      from("timer://foo?period=2000")
-         .setBody().simple("Hello from Camel Timer!")
-         .bean("camelCdiMicroservice", "sayHello")
-         .to("log:test").to("stream:out");
-   }
-
+public class Command {
 }

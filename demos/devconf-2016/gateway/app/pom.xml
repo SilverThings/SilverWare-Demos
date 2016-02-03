@@ -29,6 +29,18 @@
          <artifactId>drools-microservice-provider</artifactId>
       </dependency>
       <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-jul</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.camel</groupId>
+         <artifactId>camel-mqtt</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.camel</groupId>
+         <artifactId>camel-jetty</artifactId>
+      </dependency>
+      <dependency>
          <groupId>io.silverware.demos</groupId>
          <artifactId>gateway-kjar</artifactId>
          <version>${project.version}</version>
