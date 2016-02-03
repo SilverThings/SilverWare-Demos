@@ -57,6 +57,7 @@ The batch is a set of instructions in the format of `<led>;<channel>;<value>` ea
 #### Examples:
 * To turn the LED #1 and LED #5 completely off
 > POST [/led/batch]()
+
 ```
 1;r;0
 1;g;0
@@ -68,6 +69,7 @@ The batch is a set of instructions in the format of `<led>;<channel>;<value>` ea
 
 * To turn the LED #4 and LED #2 completely on
 > POST [/led/batch]()
+
 ```
 4;r;100
 4;g;100
@@ -79,6 +81,7 @@ The batch is a set of instructions in the format of `<led>;<channel>;<value>` ea
 
 * To set the LED #1's R channel to 5%, LED #9's R and B channels to 20% and to set the color of the LED #5, #0 and #10 to full pure green
 > POST [/led/batch]()
+
 ```
 1;r;5
 9;r;20
@@ -108,6 +111,7 @@ The batch is a set of instructions in the format of `<I2C address>;<PWM output>;
 #### Examples:
 * To set PWM output #5 of PCA9685 driver with I2C address of 0x42 to a value of 1024 and PWM output #7 of PCA9685 driver with I2C address of 0x40 to a value of 0
 > POST [/led/batch]()
+
 ```
 0x42;5;1024
 0x40;7;0
