@@ -147,10 +147,10 @@ public final class Configuration {
    }
 
    public String getRestHost() {
-      return homeConfig.getProperty("rest.host", "0.0.0.0");
+      return homeConfig.getProperty("iot.host", "0.0.0.0:8282");
    }
 
-   public String getRestPort() {
-      return homeConfig.getProperty("rest.port", "8282");
+   public String getMqttHost() {
+      return homeConfig.getProperty("mqtt.host", "localhost:1883");
    }
 }

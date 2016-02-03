@@ -11,6 +11,10 @@ public abstract class IntelligentHomeRouteBuilder extends RouteBuilder {
    protected Configuration config = Configuration.getInstance();
 
    public String restBaseUri() {
-      return "jetty:http://" + config.getRestHost() + ":" + config.getRestPort();
+      return "jetty:http://" + config.getRestHost();
+   }
+
+   public String mqttHost() {
+      return config.getMqttHost();
    }
 }

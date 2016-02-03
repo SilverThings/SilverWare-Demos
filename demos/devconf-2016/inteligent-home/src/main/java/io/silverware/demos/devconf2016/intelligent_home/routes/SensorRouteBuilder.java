@@ -34,8 +34,16 @@ public class SensorRouteBuilder extends IntelligentHomeRouteBuilder {
 
       from(restBaseUri() + "/sensorData?httpMethodRestrict=GET")
             .setHeader("address", simple(config.getSensorAddress()))
+            .setBody(simple(""))
             .to("bulldog:i2c?readLength=2")
             .process(sensorDataProcessor)
             .marshal().json(JsonLibrary.Jackson, true);
+
+      /*from("timer:sensorBroadcast?period=1000")
+            .setHeader("address", simple(config.getSensorAddress()))
+            .to("bulldog:i2c?readLength=2")
+            .process(sensorDataProcessor)
+            .marshal().json(JsonLibrary.Jackson, true)
+            .to("mqtt:status?publishTopicName=ih/messages/status&host=tcp://" + mqttHost() + "/");*/
    }
 }
