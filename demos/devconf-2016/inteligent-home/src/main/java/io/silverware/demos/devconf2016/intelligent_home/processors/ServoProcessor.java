@@ -29,23 +29,35 @@ import io.silverware.demos.devconf2016.intelligent_home.routes.Pca9685RouteBuild
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class RgbLedProcessor implements Processor {
+public class ServoProcessor implements Processor {
    private Configuration config = Configuration.getInstance();
+   private static final int PWM_MIN = 512; // 0°
+   private static final int PWM_MAX = 2048; // 180°
 
-   // input headers led=led number; channel=r, g or b; r=red value; g=green value; b=blue value;
+   // input headers servo = servo number (0-1); value = set's the servo's position (0-180);
    @Override
    public void process(final Exchange exchange) throws Exception {
       final Message in = exchange.getIn();
-      final int led = Integer.valueOf(in.getHeader("led").toString()); // 0-15
-      final String channel = in.getHeader("channel").toString(); // one of 'r', 'g' or 'b'
-      final String value = in.getHeader("value").toString(); // 0-100 [%]
+      final int servo = Integer.valueOf(in.getHeader("servo").toString()); // 0-1
+      final String value = in.getHeader("value").toString(); // 0-180 [°]
 
-      final String pca9685Address = config.getRgbLedPca9685Address(led, channel);
+      final String pca9685Address = config.getServoPca9685Address(servo);
       if (pca9685Address == null) {
-         throw new IllegalArgumentException("The address of PCA9685 for LED #" + led + " is invalid or not defined in " + Configuration.CONFIG_FILE);
+         throw new IllegalArgumentException("The address of PCA9685 for servo #" + servo + " is invalid or not defined in " + Configuration.CONFIG_FILE);
       }
       in.setHeader("address", pca9685Address);
-      in.setHeader(Pca9685RouteBuilder.PWM_HEADER, config.getRgbLedPwm(led, channel));
-      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) (40.95 * Integer.valueOf(value)));
+      in.setHeader(Pca9685RouteBuilder.PWM_HEADER, config.getServoPwm(servo));
+      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) map(Integer.valueOf(value), 0, 180, PWM_MIN, PWM_MAX));
+   }
+
+   private static double map(final double value, final double imin, final double imax, final double omin, final double omax) {
+      if (value <= imin) {
+         return omin;
+      } else if (value >= imax) {
+         return omax;
+      } else {
+         final double t = (value - imin) / (imax - imin);
+         return omin + (t * (omax - omin));
+      }
    }
 }

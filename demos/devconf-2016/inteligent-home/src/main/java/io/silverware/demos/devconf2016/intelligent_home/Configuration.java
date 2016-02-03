@@ -14,16 +14,19 @@ public final class Configuration {
 
    private static final Configuration INSTANCE = new Configuration();
 
-   private static final String LED_PCA9685_PREFIX = "pca9685";
+   private static final String PCA9685_PREFIX = "pca9685";
    private static final String LED_PREFIX = "led";
+   private static final String SERVO_PREFIX = "servo";
 
-   public static final int RGB_LED_COUNT = 16;
+   public static final int RGB_LED_COUNT = 15;
    public static final int PCA9685_COUNT = 3;
+   public static final int SERVO_COUNT = 2;
 
    public static final String CONFIG_FILE = "/home.conf";
 
    private final String[] pca9685s = new String[PCA9685_COUNT];
    private final RgbLed[] rgbLeds = new RgbLed[RGB_LED_COUNT];
+   private final Channel[] servos = new Channel[SERVO_COUNT];
 
    private final Properties homeConfig = new Properties();
 
@@ -42,7 +45,7 @@ public final class Configuration {
                if (rgbLedProp != null) {
                   final String[] ledCoordinates = rgbLedProp.split(";");
                   final int pca9685Id = Integer.valueOf(ledCoordinates[0]);
-                  final String pca9685Address = homeConfig.getProperty(LED_PCA9685_PREFIX + "." + pca9685Id);
+                  final String pca9685Address = homeConfig.getProperty(PCA9685_PREFIX + "." + pca9685Id);
 
                   if (pca9685Address != null) {
                      if (pca9685s[pca9685Id] == null) {
@@ -59,6 +62,26 @@ public final class Configuration {
                }
             }
          }
+
+         for (int servo = 0; servo < SERVO_COUNT; servo++) {
+            final String servoProp = homeConfig.getProperty(SERVO_PREFIX + "." + servo);
+
+            if (servoProp != null) {
+               final String[] servoCoordinates = servoProp.split(";");
+               final int pca9685Id = Integer.valueOf(servoCoordinates[0]);
+               final String pca9685Address = homeConfig.getProperty(PCA9685_PREFIX + "." + pca9685Id);
+
+               if (pca9685Address != null) {
+                  if (pca9685s[pca9685Id] == null) {
+                     pca9685s[pca9685Id] = pca9685Address;
+                  }
+                  if (servos[servo] == null) {
+                     servos[servo] = new Channel();
+                  }
+                  servos[servo].setPca9685Id(pca9685Id).setPwm(Integer.valueOf(servoCoordinates[1]));
+               }
+            }
+         }
       } catch (IOException e) {
          e.printStackTrace();
       }
@@ -68,7 +91,7 @@ public final class Configuration {
       return INSTANCE;
    }
 
-   public String getPca9685Address(int led, String channel) {
+   public String getRgbLedPca9685Address(int led, String channel) {
       final RgbLed rgbLed = getRgbLed(led);
       if (rgbLed == null) {
          return null;
@@ -93,6 +116,22 @@ public final class Configuration {
 
    public RgbLed getRgbLed(int led) {
       return rgbLeds[led];
+   }
+
+   public String getServoPca9685Address(int servo) {
+      if (servos[servo] == null) {
+         return null;
+      } else {
+         return pca9685s[servos[servo].getPca9685Id()];
+      }
+   }
+
+   public int getServoPwm(int servo) {
+      if (servos[servo] == null) {
+         return -1;
+      } else {
+         return servos[servo].getPwm();
+      }
    }
 
    public String getSensorAddress() {

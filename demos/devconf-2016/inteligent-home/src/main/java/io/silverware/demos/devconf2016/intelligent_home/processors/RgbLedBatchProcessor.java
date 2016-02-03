@@ -64,7 +64,7 @@ public class RgbLedBatchProcessor implements Processor {
          } else {
             pwmBatch.append("\n");
          }
-         pwmBatch.append(config.getPca9685Address(led, channel)); // I2C address
+         pwmBatch.append(config.getRgbLedPca9685Address(led, channel)); // I2C address
          pwmBatch.append(";");
          pwmBatch.append(config.getRgbLedPwm(led, channel)); // pwm output
          pwmBatch.append(";");

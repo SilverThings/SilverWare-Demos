@@ -10,6 +10,7 @@ $ java -jar target/devconf-2016-intelligent-home-*.jar
 
 ### GET [/reset]()
 Resets all the LED drivers. All the LEDs are turned off.
+---
 
 ### GET [/led/setrgb]()
 Sets the brightness of R G B channels of the specified LED to give light with a particular color.
@@ -31,6 +32,7 @@ Sets the brightness of R G B channels of the specified LED to give light with a 
 * To set the LED #1's brightness to R=0%, G=25% and B=80%
 
 > GET [/led/setrgb?led=1&r=0&g=25&b=80]()
+---
 
 ### GET [/led/setrgb/all]()
 Sets the brightness of R G B channels of all LEDs to give light with a particular color.
@@ -51,6 +53,7 @@ Sets the brightness of R G B channels of all LEDs to give light with a particula
 * To set all the LEDs brightness to R=0%, G=25% and B=80%
 
 > GET [/led/setrgb?led=1&r=0&g=25&b=80]()
+---
 
 ### POST [/led/batch]()
 Allows to set the color and brightness of multiple LEDs. The batch is send in the payload of the HTTP request.
@@ -102,6 +105,7 @@ The batch is a set of instructions in the format of `<led>;<channel>;<value>` ea
 10;g;100
 10;b;0
 ```
+---
 
 ### GET [/sensorData]()
 Return the current temperature [°C] and humidity [%] measured by the [DHT11](https://www.adafruit.com/product/386) exposed over I<sup>2</sup>C bus in JSON format.
@@ -120,6 +124,17 @@ The returned JSON object with temperature of 24 °C and humidity of 33 % looks l
   "timestamp" : "2016-02-03 14:36:19"
 }
 ```
+---
+### GET [/servo/set]()
+Sets one the two [MG90S](http://www.electronicoscaldas.com/datasheet/MG90S_Tower-Pro.pdf) servos connected to PCA9685 driver to a specified angle (0-180)°.
+* URL query parameters are:
+    * `servo`   The servo number (0-1)
+    * `value`   The angle to set the servo to (0-180)°
+
+#### Examples:
+* To set the servo #1 to 90°
+
+> GET [/servo/set?servo=1&value=90]()
 
 ## Internal REST API
 ### POST [/pca9685/batch]()
