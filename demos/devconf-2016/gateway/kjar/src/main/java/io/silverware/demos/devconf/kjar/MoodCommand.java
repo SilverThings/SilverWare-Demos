@@ -25,7 +25,7 @@ package io.silverware.demos.devconf.kjar;
 public class MoodCommand {
 
    public enum Mood {
-      SLEEP, ROMANTIC, ALERT, DAY
+      SLEEP, ROMANTIC, EVENING, DAY
    }
 
    private Mood mood;

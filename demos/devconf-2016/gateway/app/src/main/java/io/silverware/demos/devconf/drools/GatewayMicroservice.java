@@ -98,6 +98,10 @@ public class GatewayMicroservice {
       log.info("Mobile button {}", button);
    }
 
+   public void processWeather(@ParamName("status") final String status) {
+      log.info("Weather status {}", status);
+   }
+
    public void directAcutor(@ParamName("command") final String command) {
       producer.sendBody("direct:acutor", command);
    }

@@ -71,6 +71,8 @@ public class MqttRoutes extends RouteBuilder {
 
       from("mqtt:inCommand?subscribeTopicName=ih/message/commands&userName=mqtt&password=mqtt&host=tcp://" + System.getProperty("mqtt.host", "10.40.3.60:1883")).bean("gatewayMicroservice", "processCommand");
 
+      from("mqtt:inStatus?subscribeTopicName=ih/message/status&userName=mqtt&password=mqtt&host=tcp://" + System.getProperty("mqtt.host", "10.40.3.60:1883")).bean("gatewayMicroservice", "processWeather");
+
       from("direct:led").setHeader(Exchange.HTTP_METHOD, constant("POST")).to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/led/batch");
 
       from("jetty:http://" + System.getProperty("mobile.host", "0.0.0.0:8283") + "/mobile").setBody().simple("${in.header.button}").bean("gatewayMicroservice", "mobileControlButton");
