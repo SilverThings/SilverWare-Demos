@@ -60,6 +60,6 @@ public class AirConditioningCommand extends Command {
 
    @Override
    public String toString() {
-      return "A" + ac.name();
+      return "A" + ac.name().substring(0, 1);
    }
 }

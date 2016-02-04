@@ -22,7 +22,7 @@ package io.silverware.demos.devconf.kjar;
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class MoodCommand {
+public class MoodCommand extends Command {
 
    public enum Mood {
       SLEEP, ROMANTIC, EVENING, DAY

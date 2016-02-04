@@ -25,7 +25,7 @@ package io.silverware.demos.devconf.kjar;
 public class LightCommand extends Command {
 
    public enum Place {
-      CORRIDOR, JUNK, BED1, BED2, BEDROOM, BATHROOM, KITCHEN, DININGROOM, LIVINGROOM
+      CORRIDOR, JUNK, BED1, BED2, BEDROOM, BATHROOM, KITCHEN, DININGROOM, LIVINGROOM, ALL
    }
 
    public enum State {
