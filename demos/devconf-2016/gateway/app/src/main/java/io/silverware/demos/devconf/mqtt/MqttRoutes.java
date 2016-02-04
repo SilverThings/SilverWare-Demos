@@ -63,7 +63,9 @@ public class MqttRoutes extends RouteBuilder {
  */
       from("direct:acutor").to("mqtt:outAcutor?publishTopicName=ih/message/acutors&userName=mqtt&password=mqtt&host=tcp://" + System.getProperty("mqtt.host", "10.40.3.60:1883"));
 
-      from("direct:command").to("mqtt:outAcutor?publishTopicName=ih/message/commands&userName=mqtt&password=mqtt&host=tcp://" + System.getProperty("mqtt.host", "10.40.3.60:1883"));
+      from("direct:command").to("mqtt:outCommand?publishTopicName=ih/message/commands&userName=mqtt&password=mqtt&host=tcp://" + System.getProperty("mqtt.host", "10.40.3.60:1883"));
+
+      from("direct:mobile").to("mqtt:outMobile?publishTopicName=ih/message/mobile&userName=mqtt&password=mqtt&host=tcp://" + System.getProperty("mqtt.host", "10.40.3.60:1883"));
 
       from("mqtt:inAcutor?subscribeTopicName=ih/message/acutors&userName=mqtt&password=mqtt&host=tcp://" + System.getProperty("mqtt.host", "10.40.3.60:1883")).bean("gatewayMicroservice", "processAcutor");
 
@@ -71,7 +73,7 @@ public class MqttRoutes extends RouteBuilder {
 
       from("direct:led").setHeader(Exchange.HTTP_METHOD, constant("POST")).to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/led/batch");
 
-      from("jetty:http://" + System.getProperty("mobile.host", "0.0.0.0:8283") + "/mobile").bean("gatewayMicroservice", "mobileControlButton");
+      from("jetty:http://" + System.getProperty("mobile.host", "0.0.0.0:8283") + "/mobile").setBody().simple("${in.header.button}").bean("gatewayMicroservice", "mobileControlButton");
 
       /*from("timer://foo?period=2000")
          .setBody().simple("Hello from Camel Timer!")

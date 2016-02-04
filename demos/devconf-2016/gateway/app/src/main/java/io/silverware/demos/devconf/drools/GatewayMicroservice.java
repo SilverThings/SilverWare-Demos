@@ -63,8 +63,10 @@ public class GatewayMicroservice {
 
    public void processAcutor(@ParamName("command") final String command) {
       final List<String> responseCommands = new ArrayList<>();
+      final List<String> mobileStatus = new ArrayList<>();
       final EntryPoint entryPoint = session.getEntryPoint("acutors");
       session.setGlobal("commands", responseCommands);
+      session.setGlobal("mobileStatus", mobileStatus);
 
       log.info("Processing acutor: {}", command);
 
@@ -78,6 +80,7 @@ public class GatewayMicroservice {
 
          session.fireAllRules();
          responseCommands.forEach(cmd -> producer.sendBody("direct:command", cmd));
+         mobileStatus.forEach(cmd -> producer.sendBody("direct:mobile", cmd));
       } else {
          log.warn("Cannot obtain KIE session");
       }

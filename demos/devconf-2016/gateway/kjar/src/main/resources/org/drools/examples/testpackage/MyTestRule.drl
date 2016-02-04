@@ -5,6 +5,7 @@ import java.util.List;
 import io.silverware.demos.devconf.kjar.*;
 
 global java.util.List commands;
+global java.util.List mobileStatus;
 
 declare MoodCommand
   @expires( 2m )
