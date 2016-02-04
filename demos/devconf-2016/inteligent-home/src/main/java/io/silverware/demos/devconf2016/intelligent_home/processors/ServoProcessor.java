@@ -52,7 +52,15 @@ public class ServoProcessor implements Processor {
       }
       in.setHeader("address", pca9685Address);
       in.setHeader(Pca9685RouteBuilder.PWM_HEADER, config.getServoPwm(servo));
-      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) map(Integer.valueOf(value), 0, 100, PWM_MIN[servo], PWM_MAX[servo]));
+      int intValue = Integer.valueOf(value);
+      if (intValue < 0) {
+         intValue = 0;
+      } else if (intValue > 100) {
+         intValue = 100;
+      }
+      //invert
+      intValue = 100 - intValue;
+      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) map(intValue, 0, 100, PWM_MIN[servo], PWM_MAX[servo]));
    }
 
    private static double map(final double value, final double imin, final double imax, final double omin, final double omax) {

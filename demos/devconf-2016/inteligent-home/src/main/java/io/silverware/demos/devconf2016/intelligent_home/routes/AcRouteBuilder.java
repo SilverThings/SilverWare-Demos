@@ -22,15 +22,19 @@ package io.silverware.demos.devconf2016.intelligent_home.routes;
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class ResetRouteBuilder extends IntelligentHomeRouteBuilder {
-
+public class AcRouteBuilder extends IntelligentHomeRouteBuilder {
    @Override
    public void configure() throws Exception {
-      from(restBaseUri() + "/reset?httpMethodRestrict=GET")
-            .setHeader("address", simple("0x70"))
-            .to("direct:pca9685-reset")
-            .to("direct:fireplace-off")
-            .to("direct:ac-off")
-            .to("direct:tv-reset");
+      from(restBaseUri() + "/ac/on?httpMethodRestrict=GET")
+            .to("direct:ac-on");
+
+      from(restBaseUri() + "/ac/off?httpMethodRestrict=GET")
+            .to("direct:ac-off");
+
+      from("direct:ac-on")
+            .to("bulldog:gpio?pin=" + config.getFanGpioPin() + "&value=HIGH");
+
+      from("direct:ac-off")
+            .to("bulldog:gpio?pin=" + config.getFanGpioPin() + "&value=LOW");
    }
 }

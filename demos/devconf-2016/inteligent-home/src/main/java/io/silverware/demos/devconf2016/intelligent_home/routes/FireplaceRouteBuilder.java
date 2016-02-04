@@ -22,15 +22,19 @@ package io.silverware.demos.devconf2016.intelligent_home.routes;
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class ResetRouteBuilder extends IntelligentHomeRouteBuilder {
-
+public class FireplaceRouteBuilder extends IntelligentHomeRouteBuilder {
    @Override
    public void configure() throws Exception {
-      from(restBaseUri() + "/reset?httpMethodRestrict=GET")
-            .setHeader("address", simple("0x70"))
-            .to("direct:pca9685-reset")
-            .to("direct:fireplace-off")
-            .to("direct:ac-off")
-            .to("direct:tv-reset");
+      from(restBaseUri() + "/fireplace/on?httpMethodRestrict=GET")
+            .to("direct:fireplace-on");
+
+      from(restBaseUri() + "/fireplace/off?httpMethodRestrict=GET")
+            .to("direct:fireplace-off");
+
+      from("direct:fireplace-on")
+            .to("bulldog:gpio?pin=" + config.getFireplaceGpioPin() + "&value=LOW");
+
+      from("direct:fireplace-off")
+            .to("bulldog:gpio?pin=" + config.getFireplaceGpioPin() + "&value=HIGH");
    }
 }

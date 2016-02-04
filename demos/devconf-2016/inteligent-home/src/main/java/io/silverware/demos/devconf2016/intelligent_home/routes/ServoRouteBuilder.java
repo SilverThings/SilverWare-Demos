@@ -19,6 +19,7 @@
  */
 package io.silverware.demos.devconf2016.intelligent_home.routes;
 
+import io.silverware.demos.devconf2016.intelligent_home.processors.ServoOpenProcessor;
 import io.silverware.demos.devconf2016.intelligent_home.processors.ServoProcessor;
 
 /**
@@ -28,8 +29,32 @@ public class ServoRouteBuilder extends IntelligentHomeRouteBuilder {
    @Override
    public void configure() throws Exception {
       final ServoProcessor servoProcessor = new ServoProcessor();
+      final ServoOpenProcessor servoOpenProcessor = new ServoOpenProcessor();
 
       from(restBaseUri() + "/servo/set?httpMethodRestrict=GET")
+            .to("direct:servo-set");
+
+      from(restBaseUri() + "/door/open")
+            .setHeader("servo", simple("0"))
+            .process(servoOpenProcessor)
+            .to("direct:servo-set");
+
+      from(restBaseUri() + "/door/close")
+            .setHeader("servo", simple("0"))
+            .setHeader("value", simple("0"))
+            .to("direct:servo-set");
+
+      from(restBaseUri() + "/window/open")
+            .setHeader("servo", simple("1"))
+            .process(servoOpenProcessor)
+            .to("direct:servo-set");
+
+      from(restBaseUri() + "/window/close")
+            .setHeader("servo", simple("1"))
+            .setHeader("value", simple("0"))
+            .to("direct:servo-set");
+
+      from("direct:servo-set")
             .process(servoProcessor)
             .to("direct:pca9685-pwm-set");
    }

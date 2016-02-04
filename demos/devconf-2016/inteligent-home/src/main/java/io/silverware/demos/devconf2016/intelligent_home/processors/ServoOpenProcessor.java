@@ -17,20 +17,26 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package io.silverware.demos.devconf2016.intelligent_home.routes;
+package io.silverware.demos.devconf2016.intelligent_home.processors;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.Message;
+import org.apache.camel.Processor;
+
+import io.silverware.demos.devconf2016.intelligent_home.Configuration;
 
 /**
  * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
-public class ResetRouteBuilder extends IntelligentHomeRouteBuilder {
+public class ServoOpenProcessor implements Processor {
+   private Configuration config = Configuration.getInstance();
 
    @Override
-   public void configure() throws Exception {
-      from(restBaseUri() + "/reset?httpMethodRestrict=GET")
-            .setHeader("address", simple("0x70"))
-            .to("direct:pca9685-reset")
-            .to("direct:fireplace-off")
-            .to("direct:ac-off")
-            .to("direct:tv-reset");
+   public void process(final Exchange exchange) throws Exception {
+      Message in = exchange.getIn();
+      Object valueHeader = in.getHeader("value");
+      if (valueHeader == null) {
+         in.setHeader("value", "100");
+      }
    }
 }
