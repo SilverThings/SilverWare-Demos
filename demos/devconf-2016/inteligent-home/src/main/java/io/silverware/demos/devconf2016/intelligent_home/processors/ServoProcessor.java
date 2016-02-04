@@ -31,15 +31,20 @@ import io.silverware.demos.devconf2016.intelligent_home.routes.Pca9685RouteBuild
  */
 public class ServoProcessor implements Processor {
    private Configuration config = Configuration.getInstance();
-   private static final int PWM_MIN = 512; // 0°
-   private static final int PWM_MAX = 2048; // 180°
 
-   // input headers servo = servo number (0-1); value = set's the servo's position (0-180);
+   // 100Hz
+   private static final int[] PWM_MIN = new int[] { 780, 670 }; // 0%
+   private static final int[] PWM_MAX = new int[] { 1040, 1070 }; // 100%
+
+   // input headers servo = servo number (0-1); value = set's the servo's position (0-100%);
    @Override
    public void process(final Exchange exchange) throws Exception {
       final Message in = exchange.getIn();
       final int servo = Integer.valueOf(in.getHeader("servo").toString()); // 0-1
-      final String value = in.getHeader("value").toString(); // 0-180 [°]
+      if (servo < 0 || servo > 1) {
+         throw new IllegalArgumentException("Invalid servo number (" + servo + "), (0-1) expected.");
+      }
+      final String value = in.getHeader("value").toString(); // 0-100 [%]
 
       final String pca9685Address = config.getServoPca9685Address(servo);
       if (pca9685Address == null) {
@@ -47,7 +52,7 @@ public class ServoProcessor implements Processor {
       }
       in.setHeader("address", pca9685Address);
       in.setHeader(Pca9685RouteBuilder.PWM_HEADER, config.getServoPwm(servo));
-      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) map(Integer.valueOf(value), 0, 180, PWM_MIN, PWM_MAX));
+      in.setHeader(Pca9685RouteBuilder.VALUE_HEADER, (int) map(Integer.valueOf(value), 0, 100, PWM_MIN[servo], PWM_MAX[servo]));
    }
 
    private static double map(final double value, final double imin, final double imax, final double omin, final double omax) {

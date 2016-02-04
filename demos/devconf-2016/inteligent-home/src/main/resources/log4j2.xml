@@ -20,9 +20,9 @@
       <Logger name="com" level="info"/>
       <Logger name="org" level="info"/>
       <Logger name="io.silverware" level="info"/>
-      <Logger name="io.silverware.demos.devconf2016" level="info"/>
-      <Logger name="io.silverspoon.demos.devconf2016" level="info"/>
-      <Root level="info">
+      <Logger name="io.silverware.demos.devconf2016" level="trace"/>
+      <Logger name="io.silverspoon.demos.devconf2016" level="trace"/>
+      <Root level="trace">
          <AppenderRef ref="ASYNC"/>
       </Root>
    </Loggers>

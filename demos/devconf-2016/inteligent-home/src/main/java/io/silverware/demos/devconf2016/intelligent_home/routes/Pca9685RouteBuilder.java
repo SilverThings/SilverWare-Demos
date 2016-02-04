@@ -37,7 +37,9 @@ public class Pca9685RouteBuilder extends IntelligentHomeRouteBuilder {
       // direct routes
       from("direct:pca9685-reset")
             .setBody(simple("0031")).to("bulldog:i2c")
-            .setBody(simple("FE1E")).to("bulldog:i2c") //sets PWM frequency to 200 Hz
+            //.setBody(simple("FE1E")).to("bulldog:i2c") //sets PWM frequency to 200 Hz
+            //.setBody(simple("FE7A")).to("bulldog:i2c") //sets PWM frequency to 50 Hz
+            .setBody(simple("FE3D")).to("bulldog:i2c") //sets PWM frequency to 100 Hz
             .setBody(simple("00A1")).to("bulldog:i2c")
             .setBody(simple("0104")).to("bulldog:i2c")
             .setBody(simple("FC0010")).to("bulldog:i2c");

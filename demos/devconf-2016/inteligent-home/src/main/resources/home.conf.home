@@ -1,6 +1,18 @@
+iot.host=0.0.0.0:8282
+mqtt.host=localhost:1883
+
 pca9685.0=0x40
 pca9685.1=0x41
 pca9685.2=0x42
+
+dht11.address=0x43
+
+fan.gpio=P1_11
+fireplace.gpio=P1_13
+
+#<pca9685 module number from above>;<pwm output number 0-15>
+servo.0=2;15 #780-1040 main door
+servo.1=1;0 #670-1070 back door
 
 #<pca9685 module number from above>;<pwm output number 0-15>
 led.0.r=1;13
