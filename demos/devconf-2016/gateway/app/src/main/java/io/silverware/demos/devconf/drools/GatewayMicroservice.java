@@ -154,16 +154,16 @@ public class GatewayMicroservice {
             String mode = command.substring(1, 2);
             switch (mode) {
                case "0": // off
-                  producer.sendBody("direct:ledAllOff");
+                  producer.sendBody("direct:ledAllOff", "");
                   break;
                case "R": // romantic
-                  producer.sendBody("direct:ledAllRomantic");
+                  producer.sendBody("direct:ledAllRomantic", "");
                   break;
                case "E": // evening
-                  producer.sendBody("direct:ledAllEvening");
+                  producer.sendBody("direct:ledAllEvening", "");
                   break;
                case "1": // evening
-                  producer.sendBody("direct:ledAllOn");
+                  producer.sendBody("direct:ledAllOn", "");
                   break;
                default:
                   log.warn("Unknown all led state requested.");
@@ -254,6 +254,18 @@ public class GatewayMicroservice {
 
    public void processWeather(@ParamName("status") final String status) {
       log.info("Weather status {}", status);
+
+      final String tempField = "\"temperature\" : ";
+      String tempStr = status.substring(status.indexOf(tempField) + tempField.length());
+      tempStr = tempStr.substring(0, tempStr.indexOf(","));
+      int temp = Integer.parseInt(tempStr);
+
+      final String humidityField = "\"humidity\" : ";
+      String humidityStr = status.substring(status.indexOf(humidityField) + humidityField.length());
+      humidityStr = humidityStr.substring(0, humidityStr.indexOf(","));
+      int humidity = Integer.parseInt(humidityStr);
+
+      producer.sendBody("direct:mobile", "action18:" + 0xeeeeee + ":" + temp + "°C / " + humidity + "%");
    }
 
    public void directAcutor(@ParamName("command") final String command) {

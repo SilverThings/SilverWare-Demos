@@ -55,7 +55,7 @@ then
    commands.add("lE"); // all led on
    commands.add("FH"); // fireplace heat
    commands.add("CN"); // tv news
-   commands.add("L10;r;30\n10;g;30\n10;b;30\n11;r;30\n11;g;30\n11;b;30\n14;r;30\n14;g;30\n14;b;30"); // set leds
+   commands.add("L10;r;10\n10;g;10\n10;b;10\n11;r;10\n11;g;10\n11;b;10\n14;r;10\n14;g;10\n14;b;10"); // set leds
 end
 
 rule "Sleep mood command"
@@ -68,7 +68,7 @@ then
    commands.add("CO"); // tv off
    commands.add("DF0"); // front door close
    commands.add("DR0"); // window close
-   commands.add("L3;r;30\n3;g;30\n3;b;30\n4;r;30\n4;g;30\n4;b;30\n7;r;30\n7;g;30\n7;b;30\n8;r;30\n8;g;30\n8;b;30"); // set leds
+   commands.add("L3;r;0\n3;g;5\n3;b;0\n7;r;0\n7;g;5\n7;b;0\n8;r;0\n8;g;5\n8;b;0"); // set leds
 end
 
 rule "Romantic mood command"
@@ -120,5 +120,54 @@ when
   $light: LightCommand(place == LightCommand.Place.BEDROOM, state == LightCommand.State.ON) from entry-point "acutors"
 then
   System.out.println("Processing Light Bedroom On");
-  commands.add("L");
+  commands.add("L9;r;100\n9;g;100\n9;b;100");
 end
+
+rule "Light Bedroom Off"
+when
+  $light: LightCommand(place == LightCommand.Place.BEDROOM, state == LightCommand.State.OFF) from entry-point "acutors"
+then
+  System.out.println("Processing Light Bedroom Off");
+  commands.add("L9;r;0\n9;g;0\n9;b;0");
+end
+
+rule "Light Bed 1 On"
+when
+  $light: LightCommand(place == LightCommand.Place.BED1, state == LightCommand.State.ON) from entry-point "acutors"
+then
+  System.out.println("Processing Light Bed 1 On");
+  commands.add("L12;r;100\n12;g;100\n12;b;100");
+end
+
+rule "Light Bed 1 Off"
+when
+  $light: LightCommand(place == LightCommand.Place.BED1, state == LightCommand.State.OFF) from entry-point "acutors"
+then
+  System.out.println("Processing Light Bed 1 Off");
+  commands.add("L12;r;0\n12;g;0\n12;b;0");
+end
+
+rule "Light Bed 2 On"
+when
+  $light: LightCommand(place == LightCommand.Place.BED2, state == LightCommand.State.ON) from entry-point "acutors"
+then
+  System.out.println("Processing Light Bed 2 On");
+  commands.add("L13;r;100\n13;g;100\n13;b;100");
+end
+
+rule "Light Bed 2 Off"
+when
+  $light: LightCommand(place == LightCommand.Place.BED2, state == LightCommand.State.OFF) from entry-point "acutors"
+then
+  System.out.println("Processing Light Bed 2 Off");
+  commands.add("L13;r;0\n13;g;0\n13;b;0");
+end
+
+rule "Light All Off"
+when
+  $light: LightCommand(place == LightCommand.Place.ALL, state == LightCommand.State.OFF) from entry-point "acutors"
+then
+  System.out.println("Processing Light All Off");
+  commands.add("l0");
+end
+

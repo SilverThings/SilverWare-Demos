@@ -73,36 +73,31 @@ public class MqttRoutes extends RouteBuilder {
 
       from("mqtt:inStatus?subscribeTopicName=ih/message/status&userName=mqtt&password=mqtt&host=tcp://" + System.getProperty("mqtt.host", "10.40.3.60:1883")).bean("gatewayMicroservice", "processWeather");
 
-      from("direct:led").setHeader(Exchange.HTTP_METHOD, constant("POST")).to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/led/batch");
-      from("direct:ledAllOff").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/led/setrgb/all?r=0&g=0&b=0");
-      from("direct:ledAllRomantic").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/led/setrgb/all?r=50&g=30&b=30");
-      from("direct:ledAllOn").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/led/setrgb/all?r=100&g=100&b=100");
-      from("direct:ledAllEvening").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/led/setrgb/all?r=80&g=80&b=50");
+      from("direct:led").setHeader(Exchange.HTTP_METHOD, constant("POST")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/led/batch");
+      from("direct:ledAllOff").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/led/setrgb/all?r=0&g=0&b=0");
+      from("direct:ledAllRomantic").setHeader(Exchange.HTTP_METHOD, constant("GET")).setHeader("r", constant("50")).setHeader("g", constant("10")).setHeader("b", constant("10")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/led/setrgb/all");
+      from("direct:ledAllOn").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/led/setrgb/all?r=100&g=100&b=100");
+      from("direct:ledAllEvening").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/led/setrgb/all?r=80&g=80&b=50");
 
-      from("direct:acOn").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/ac/on");
-      from("direct:acOff").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/ac/off");
+      from("direct:acOn").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/ac/on");
+      from("direct:acOff").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/ac/off");
 
-      from("direct:fireOn").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/fireplace/on");
-      from("direct:fireOff").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/fireplace/off");
+      from("direct:fireOn").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/fireplace/on");
+      from("direct:fireOff").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/fireplace/off");
 
-      from("direct:tvRomantic").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/tv/romantic");
-      from("direct:tvNews").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/tv/news");
-      from("direct:tvOff").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/tv/off");
+      from("direct:tvRomantic").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/tv/romantic");
+      from("direct:tvNews").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/tv/news");
+      from("direct:tvOff").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/tv/off");
 
-      from("direct:doorOpen").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/door/open");
-      from("direct:doorClose").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/door/close");
+      from("direct:doorOpen").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/door/open");
+      from("direct:doorClose").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/door/close");
 
-      from("direct:windowOpen").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/window/open");
-      from("direct:windowClose").to("jetty:http://" + System.getProperty("iot.host", "10.40.3.63:8282") + "/window/close");
+      from("direct:windowOpen").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/window/open");
+      from("direct:windowClose").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/window/close");
 
       from("jetty:http://" + System.getProperty("mobile.host", "0.0.0.0:8283") + "/mobile").setBody().simple("${in.header.button}").bean("gatewayMicroservice", "mobileControlButton");
 
-      from("timer://foo?period=1000").setBody().simple("{\n"
-            + "  \"sensorName\" : \"LivingRoom\",\n"
-            + "  \"temperature\" : 24,\n"
-            + "  \"humidity\" : 33,\n"
-            + "  \"timestamp\" : \"2016-02-03 14:36:19\"\n"
-            + "}").bean("gatewayMicroservice", "processWeather");
+      from("timer://foo?period=5000").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + System.getProperty("iot.host", "10.40.2.210:8282") + "/sensorData").bean("gatewayMicroservice", "processWeather");
 
       /*from("timer://foo?period=2000")
          .setBody().simple("Hello from Camel Timer!")

@@ -1,23 +1,29 @@
-Demonstrates integration of Drools Knowledge JARs into SilverWare.
-Any kjar present on the classpath is recognized by the KIE CDI extension and its sessions are prepared for injection.
+Complex demo to drive Intelligent Home demo on DevConf 2016
+===
 
-In this example, there are two modules:
- * kjar - contains the knowledge module
- * app - the sample application injecting the kjar and firing its rule
+Prerequisities:
+Install JBoss A-MQ, tested with version 6.2.1.redhat-084.
+Start the broker with `bin/standalone.sh`.
+Add an admin user mqtt/mqtt:
 
-Run the following command in the project root (where this file is present). Due to the project structure, the app module cannot be built standalone unless kjar is installed in your local repository.
-
-`> mvn clean package`
-
-Then start SilverWare quickstart by
-
-`> java -jar app/target/drools-helloworld-*.jar`
-
-See the following output showing that the rules were fired:
 ```
-2016-02-02 22:12:23,598 INFO  {io.silverware.demos.quickstarts.drools.DroolsHelloWorldMicroservice} DroolsHelloWorldMicroservice constructor
-2016-02-02 22:12:24,486 INFO  {io.silverware.demos.quickstarts.drools.DroolsHelloWorldMicroservice} DroolsHelloWorldMicroservice MicroservicesStartedEvent KieSession[0]
-Firing:test
-2016-02-02 22:12:24,520 INFO  {io.silverware.demos.quickstarts.drools.DroolsHelloWorldMicroservice} Fired!
+JBossA-MQ:karaf@root> amq:create-admin-user
+Please specify a user...
+New user name: mqtt
+Password for mqtt: 
+Verify password for mqtt: 
 ```
 
+Edit app/src/main/java/io/silverware/demos/devconf/mqtt/MqttRoutes.java to set appropriate IP addresses or ports. Optionally, these can be provided as system properties.
+
+* iot.host - IP address of the RPI based services in the home
+* mqtt.host - IP address of the A-MQ broker
+* mobile.host - IP address to which the internal REST server will be bind, this is the control interface for the mobile application
+
+Compile with:
+
+`mvn package`
+
+Run the jar file in app/target. Optionally use the following parameters to fix logging of some components:
+
+`java -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -jar app/target/gateway-app-2.0-SNAPSHOT.jar`
