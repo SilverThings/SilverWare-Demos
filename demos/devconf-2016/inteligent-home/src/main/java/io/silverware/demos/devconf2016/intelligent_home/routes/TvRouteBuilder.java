@@ -19,6 +19,7 @@
  */
 package io.silverware.demos.devconf2016.intelligent_home.routes;
 
+import io.silverware.demos.devconf2016.intelligent_home.processors.SilenceProcessor;
 import io.silverware.demos.devconf2016.intelligent_home.processors.SoundProcessor;
 
 /**
@@ -26,6 +27,7 @@ import io.silverware.demos.devconf2016.intelligent_home.processors.SoundProcesso
  */
 public class TvRouteBuilder extends IntelligentHomeRouteBuilder {
    final SoundProcessor soundProcessor = new SoundProcessor();
+   final SilenceProcessor silenceProcessor = new SilenceProcessor();
 
    @Override
    public void configure() throws Exception {
@@ -44,9 +46,8 @@ public class TvRouteBuilder extends IntelligentHomeRouteBuilder {
             .process(soundProcessor)
             .setBody(simple("OK"));
 
-      from("direct:tv-goodbye")
-            .setHeader("sound", simple("/root/goodbye.wav"))
-            .process(soundProcessor)
+      from("direct:tv-off")
+            .process(silenceProcessor)
             .setBody(simple("OK"));
 
       from(restBaseUri() + "/tv/romantic?httpMethodRestrict=GET")
@@ -56,6 +57,6 @@ public class TvRouteBuilder extends IntelligentHomeRouteBuilder {
             .to("direct:tv-news");
 
       from(restBaseUri() + "/tv/off?httpMethodRestrict=GET")
-            .to("direct:tv-goodbye");
+            .to("direct:tv-off");
    }
 }
