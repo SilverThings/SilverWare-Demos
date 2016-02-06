@@ -125,16 +125,33 @@ The returned JSON object with temperature of 24 °C and humidity of 33 % looks l
 }
 ```
 ---
-### GET [/servo/set]()
-Sets one the two [MG90S](http://www.electronicoscaldas.com/datasheet/MG90S_Tower-Pro.pdf) servos connected to PCA9685 driver to a specified angle (0-180)°.
-* URL query parameters are:
-    * `servo`   The servo number (0-1)
-    * `value`   The angle to set the servo to (0-180)°
 
-#### Examples:
-* To set the servo #1 to 90°
+### GET [/ac/on]()
+Turn the air condition fan on.
+---
 
-> GET [/servo/set?servo=1&value=90]()
+### GET [/ac/off]()
+Turn the air condition fan off.
+---
+
+### GET [/fireplace/on]()
+"Starts a fire" in the fireplace.
+---
+
+### GET [/fireplace/off]()
+"Extinguish the fire" in the fireplace.
+---
+
+### GET [/tv/reset]()
+Plays `/root/reset.wav` from the TV's speaker.
+---
+
+### GET [/tv/news]()
+Plays `/root/news.wav` from the TV's speaker.
+---
+
+### GET [/tv/romantic]()
+Plays `/root/romantic.wav` from the TV's speaker.
 
 ## Internal REST API
 ### POST [/pca9685/batch]()
@@ -155,3 +172,14 @@ The batch is a set of instructions in the format of `<I2C address>;<PWM output>;
 0x42;5;1024
 0x40;7;0
 ```
+---
+
+### GET [/servo/set]()
+Sets one the two [MG90S](http://www.electronicoscaldas.com/datasheet/MG90S_Tower-Pro.pdf) servos connected to PCA9685 driver to a specified angle (0-180)°.
+* URL query parameters are:
+    * `servo`   The servo number (0-1)
+    * `value`   The angle to set the servo to (0-180)°
+
+#### Examples:
+* To set the servo #1 to 90°
+> GET [/servo/set?servo=1&value=90]()
