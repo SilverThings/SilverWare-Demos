@@ -1,0 +1,406 @@
+{
+  "apiVersion": "v1",
+  "kind": "Template",
+  "labels": {},
+  "metadata": {
+    "annotations": {
+      "description": "# Silverware Devconf2016 gateway-app demo\n\n",
+      "iconClass": "icon-java"
+    },
+    "labels": {},
+    "name": "gateway-app-demo"
+  },
+  "parameters": [
+    {
+      "name": "APP_NAME",
+      "value": "gateway-app-demo",
+      "description": "Application Name"
+    },
+    {
+      "name": "GIT_REPO",
+      "value": "https://github.com/px3/SilverWare-Demos.git",
+      "required": true,
+      "description": "Git repository, required"
+    },
+    {
+      "name": "GIT_REF",
+      "value": "master",
+      "description": "Git ref to build"
+    },
+    {
+      "name": "MQTT_HOST",
+      "value": "mqtt.example.com:1883",
+      "required": true,
+      "description": "Address:port to mqtt host"
+    },
+    {
+      "name": "IOT_HOST",
+      "value": "192.168.1.101:8282",
+      "required": true,
+      "description": "Address:port to sending to iot host"
+    },
+    {
+      "description": "Custom hostname for mobile service route.",
+      "name": "MOBILE_HOSTNAME",
+      "value": "mobile.example.com",
+      "required": true
+    },
+    {
+      "description": "Custom hostname for silverware management service route.",
+      "name": "MANAGEMENT_HOSTNAME",
+      "value": "silverware.example.com",
+      "required": true
+    },
+    {
+      "name": "BUILDER_VERSION",
+      "value": "1.0",
+      "description": "Builder version"
+    },
+    {
+      "name": "APP_VERSION",
+      "value": "1.0",
+      "description": "Application version"
+    },
+    {
+      "name": "MAVEN_ARGS",
+      "value": "-Ps2i package -pl io.silverware.demos:gateway-app -am -DskipTests -e",
+      "description": "Arguments passed to mvn in the build"
+    },
+    {
+      "name": "MAVEN_ARGS_APPEND",
+      "value": "",
+      "description": "Extra arguments passed to mvn, e.g. for multi-module builds"
+    },
+    {
+      "name": "ARTIFACT_DIR",
+      "value": "devconf-2016/gateway/app/target/",
+      "description": "Maven build directory"
+    },
+    {
+      "description": "Namespace in which the Fuse ImageStreams are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.",
+      "name": "IMAGE_STREAM_NAMESPACE",
+      "value": "openshift",
+      "required": true
+    },
+    {
+      "generate": "expression",
+      "name": "BUILD_SECRET",
+      "description": "The secret needed to trigger a build",
+      "from": "[a-zA-Z0-9]{8}"
+    }
+  ],
+  "objects": [
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "annotations": {
+          "prometheus.io/port": "9779",
+          "prometheus.io/scrape": "true"
+        },
+        "labels": {
+          "container": "java",
+          "component": "${APP_NAME}",
+          "provider": "s2i",
+          "project": "${APP_NAME}",
+          "version": "${APP_VERSION}",
+          "group": "quickstarts"
+        },
+        "name": "${APP_NAME}-mobile"
+      },
+      "spec": {
+        "deprecatedPublicIPs": [],
+        "ports": [
+          {
+            "port": 8283,
+            "targetPort": 8283
+          }
+        ],
+        "selector": {
+          "container": "java",
+          "project": "${APP_NAME}",
+          "component": "${APP_NAME}",
+          "provider": "s2i",
+          "group": "quickstarts"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "annotations": {
+        },
+        "labels": {
+          "container": "java",
+          "component": "${APP_NAME}",
+          "provider": "s2i",
+          "project": "${APP_NAME}",
+          "version": "${APP_VERSION}",
+          "group": "quickstarts"
+        },
+        "name": "${APP_NAME}-mgt"
+      },
+      "spec": {
+        "deprecatedPublicIPs": [],
+        "ports": [
+          {
+            "port": 8081,
+            "targetPort": 8081
+          }
+        ],
+        "selector": {
+          "container": "java",
+          "project": "${APP_NAME}",
+          "component": "${APP_NAME}",
+          "provider": "s2i",
+          "group": "quickstarts"
+        }
+      }
+    },
+    {
+      "kind": "Route",
+      "apiVersion": "v1",
+      "id": "${APP_NAME}-mobile",
+      "metadata": {
+        "name": "${APP_NAME}-mobile",
+        "labels": {
+          "application": "${APP_NAME}-mobile"
+        },
+        "annotations": {
+          "description": "Route for application's mobile service."
+        }
+      },
+      "spec": {
+        "host": "${MOBILE_HOSTNAME}",
+        "to": {
+          "name": "${APP_NAME}-mobile"
+        }
+      }
+    },
+    {
+      "kind": "Route",
+      "apiVersion": "v1",
+      "id": "${APP_NAME}-mgt",
+      "metadata": {
+        "name": "${APP_NAME}-mgt",
+        "labels": {
+          "application": "${APP_NAME}-mgt"
+        },
+        "annotations": {
+          "description": "Route for application's management service."
+        }
+      },
+      "spec": {
+        "host": "${MANAGEMENT_HOSTNAME}",
+        "to": {
+          "name": "${APP_NAME}-mgt"
+        }
+      }
+    },
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APP_NAME}",
+        "creationTimestamp": null,
+        "labels": {
+          "component": "${APP_NAME}",
+          "container": "java",
+          "group": "quickstarts",
+          "project": "${APP_NAME}",
+          "provider": "s2i",
+          "version": "${APP_VERSION}"
+        }
+      },
+      "spec": {},
+      "status": {
+        "dockerImageRepository": ""
+      }
+    },
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APP_NAME}",
+        "creationTimestamp": null,
+        "labels": {
+          "component": "${APP_NAME}",
+          "container": "java",
+          "group": "quickstarts",
+          "project": "${APP_NAME}",
+          "provider": "s2i",
+          "version": "${APP_VERSION}"
+        }
+      },
+      "spec": {
+        "triggers": [
+          {
+            "type": "GitHub",
+            "github": {
+              "secret": "${BUILD_SECRET}"
+            }
+          },
+          {
+            "type": "Generic",
+            "generic": {
+              "secret": "${BUILD_SECRET}"
+            }
+          },
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChange": {}
+          }
+        ],
+        "source": {
+          "type": "Git",
+          "git": {
+            "uri": "${GIT_REPO}",
+            "ref": "${GIT_REF}"
+          },
+          "contextDir": "demos"
+        },
+        "strategy": {
+          "type": "Source",
+          "sourceStrategy": {
+            "from": {
+              "kind": "ImageStreamTag",
+              "namespace": "${IMAGE_STREAM_NAMESPACE}",
+              "name": "fis-java-openshift:${BUILDER_VERSION}"
+            },
+            "incremental": true,
+            "forcePull": false,
+            "env": [
+              {
+                "name": "BUILD_LOGLEVEL",
+                "value": "5"
+              },
+              {
+                "name": "ARTIFACT_DIR",
+                "value": "${ARTIFACT_DIR}"
+              },
+              {
+                "name": "MAVEN_ARGS",
+                "value": "${MAVEN_ARGS}"
+              },
+              {
+                "name": "MAVEN_ARGS_APPEND",
+                "value": "${MAVEN_ARGS_APPEND}"
+              }
+            ]
+          }
+        },
+        "output": {
+          "to": {
+            "kind": "ImageStreamTag",
+            "name": "${APP_NAME}:latest"
+          }
+        },
+        "resources": {}
+      },
+      "status": {
+        "lastVersion": 0
+      }
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APP_NAME}",
+        "creationTimestamp": null,
+        "labels": {
+          "component": "${APP_NAME}",
+          "container": "java",
+          "group": "quickstarts",
+          "project": "${APP_NAME}",
+          "provider": "s2i",
+          "version": "${APP_VERSION}"
+        }
+      },
+      "spec": {
+        "strategy": {
+          "resources": {}
+        },
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "automatic": true,
+              "containerNames": [
+                "${APP_NAME}"
+              ],
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "${APP_NAME}:latest"
+              }
+            }
+          }
+        ],
+        "replicas": 1,
+        "selector": {
+          "component": "${APP_NAME}",
+          "container": "java",
+          "deploymentconfig": "${APP_NAME}",
+          "group": "quickstarts",
+          "project": "${APP_NAME}",
+          "provider": "s2i",
+          "version": "${APP_VERSION}"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "component": "${APP_NAME}",
+              "container": "java",
+              "deploymentconfig": "${APP_NAME}",
+              "group": "quickstarts",
+              "project": "${APP_NAME}",
+              "provider": "s2i",
+              "version": "${APP_VERSION}"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "${APP_NAME}",
+                "image": "library/${APP_NAME}:latest",
+                "readinessProbe": {
+                  "exec": {
+                    "command": [
+                      "/bin/bash",
+                      "-c",
+                      "(curl -f 127.0.0.1:8778) >/dev/null 2>&1; test $? != 7"
+                    ]
+                  },
+                  "initialDelaySeconds": 30,
+                  "timeoutSeconds": 5
+                },
+                "ports": [
+                  {
+                    "containerPort": 8778,
+                    "name": "jolokia",
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "JAVA_OPTIONS",
+                    "value": " -Dmqtt.host=${MQTT_HOST} -Diot.host=${IOT_HOST} -Dmobile.host=0.0.0.0:8283 -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager "
+                  }
+                ],
+                "resources": {}
+              }
+            ]
+          }
+        }
+      },
+      "status": {}
+    }
+  ]
+}

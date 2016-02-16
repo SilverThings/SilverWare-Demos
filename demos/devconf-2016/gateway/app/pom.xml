@@ -55,4 +55,31 @@
          </plugin>
       </plugins>
    </build>
+
+   <profiles>
+      <profile>
+         <id>s2i</id>
+         <build>
+            <plugins>
+               <!-- required for s2i openshift build and deploy-->
+               <plugin>
+                  <groupId>io.fabric8</groupId>
+                  <artifactId>hawt-app-maven-plugin</artifactId>
+                  <version>${version.fabric8}</version>
+                  <executions>
+                     <execution>
+                        <id>hawt-app</id>
+                        <goals>
+                           <goal>build</goal>
+                        </goals>
+                        <configuration>
+                           <javaMainClass>io.silverware.microservices.Boot</javaMainClass>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 </project>
