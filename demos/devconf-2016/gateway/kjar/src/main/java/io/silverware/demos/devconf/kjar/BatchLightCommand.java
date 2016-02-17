@@ -22,7 +22,9 @@ package io.silverware.demos.devconf.kjar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
@@ -76,6 +78,14 @@ public class BatchLightCommand extends Command {
       return "BatchLightCommand{" +
             "commands=" + commands +
             '}';
+   }
+
+   @Override
+   public Map<String, String> getCacheUpdate() {
+      Map<String, String> update = new HashMap<>();
+      commands.forEach(light -> update.putAll(light.getCacheUpdate()));
+
+      return update;
    }
 
    public String getBatch() {

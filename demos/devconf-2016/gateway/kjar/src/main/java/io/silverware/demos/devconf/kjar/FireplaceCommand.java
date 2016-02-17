@@ -19,6 +19,9 @@
  */
 package io.silverware.demos.devconf.kjar;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
@@ -60,6 +63,14 @@ public class FireplaceCommand extends Command {
 
    @Override
    public String toString() {
-      return "F" + fire.name().substring(0, 1);
+      return "FireplaceCommand{" +
+            "fire=" + fire +
+            '}';
    }
+
+   @Override
+   public Map<String, String> getCacheUpdate() {
+      return Collections.singletonMap(this.getClass().getCanonicalName(), fire.toString());
+   }
+
 }

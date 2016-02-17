@@ -2,12 +2,14 @@ package io.silverware.demos.devconf.kjar
 
 import java.lang.String;
 import java.util.List;
+import java.util.Map;
 import io.silverware.demos.devconf.kjar.*;
 
 import org.apache.camel.ProducerTemplate;
 
 global java.util.List commands;
 global org.apache.camel.ProducerTemplate producer;
+global java.util.Map cache;
 
 declare MoodAction
   @expires( 2m )

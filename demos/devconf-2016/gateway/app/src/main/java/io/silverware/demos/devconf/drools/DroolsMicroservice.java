@@ -19,11 +19,6 @@
  */
 package io.silverware.demos.devconf.drools;
 
-import io.silverware.demos.devconf.kjar.Action;
-import io.silverware.demos.devconf.kjar.Command;
-import io.silverware.microservices.annotations.Microservice;
-import io.silverware.microservices.annotations.MicroserviceReference;
-
 import org.apache.camel.ProducerTemplate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +31,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import javax.inject.Inject;
+
+import io.silverware.demos.devconf.kjar.Action;
+import io.silverware.demos.devconf.kjar.Command;
+import io.silverware.microservices.annotations.Microservice;
+import io.silverware.microservices.annotations.MicroserviceReference;
 
 /**
  * Processes actions from the action message topic and publishes the resulting commands to the commands message topic. The decision is based
@@ -59,6 +59,10 @@ public class DroolsMicroservice {
    @MicroserviceReference
    private ProducerTemplate producer;
 
+   @Inject
+   @MicroserviceReference
+   private CacheMicroservice cache;
+
    public void processActions(final List<Action> actions) throws InterruptedException {
       log.info("Firing rules for action {}", actions);
 
@@ -69,6 +73,7 @@ public class DroolsMicroservice {
          final EntryPoint entryPoint = session.getEntryPoint("actions");
          session.setGlobal("producer", producer);
          session.setGlobal("commands", commands);
+         session.setGlobal("cache", cache.getCache());
 
          actions.forEach(entryPoint::insert);
 

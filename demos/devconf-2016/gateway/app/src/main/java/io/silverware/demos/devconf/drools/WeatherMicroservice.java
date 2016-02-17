@@ -19,15 +19,15 @@
  */
 package io.silverware.demos.devconf.drools;
 
-import io.silverware.demos.devconf.kjar.WeatherAction;
-import io.silverware.microservices.annotations.Microservice;
-import io.silverware.microservices.annotations.MicroserviceReference;
-
 import org.apache.camel.ProducerTemplate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
+
+import io.silverware.demos.devconf.kjar.WeatherAction;
+import io.silverware.microservices.annotations.Microservice;
+import io.silverware.microservices.annotations.MicroserviceReference;
 
 /**
  * Extracts weather information from the Intelligent Home's JSON object and puts them on the actions message topic.
@@ -57,8 +57,6 @@ public class WeatherMicroservice {
       int humidity = Integer.parseInt(humidityStr);
 
       producer.sendBody("direct:actions", new WeatherAction(temp, humidity));
-
-      ///producer.sendBody("direct:mobile", "action18:" + 0xeeeeee + ":" + temp + "°C / " + humidity + "%");
    }
 
 }

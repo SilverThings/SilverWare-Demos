@@ -20,9 +20,14 @@
 package io.silverware.demos.devconf.kjar;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
 public class Command implements Serializable {
+
+   public Map<String, String> getCacheUpdate() {
+      return null;
+   }
 }

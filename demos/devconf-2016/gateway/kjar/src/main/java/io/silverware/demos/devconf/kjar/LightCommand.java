@@ -19,6 +19,9 @@
  */
 package io.silverware.demos.devconf.kjar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
@@ -88,4 +91,15 @@ public class LightCommand extends Command {
             ", state=" + state +
             '}';
    }
+
+   @Override
+   public Map<String, String> getCacheUpdate() {
+      Map<String, String> update = new HashMap<>();
+      update.put(this.getClass().getCanonicalName() + "." + place.toString() + ".R", String.valueOf(state.getR()));
+      update.put(this.getClass().getCanonicalName() + "." + place.toString() + ".G", String.valueOf(state.getG()));
+      update.put(this.getClass().getCanonicalName() + "." + place.toString() + ".B", String.valueOf(state.getB()));
+
+      return update;
+   }
+
 }

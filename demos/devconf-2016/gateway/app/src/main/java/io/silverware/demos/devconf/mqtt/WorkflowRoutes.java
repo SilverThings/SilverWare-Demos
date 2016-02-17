@@ -43,6 +43,7 @@ public class WorkflowRoutes extends RouteBuilder {
 
       // where does the command belong to?
       from("mqtt:inCommands?subscribeTopicName=ih/message/commands&userName=mqtt&password=mqtt&host=tcp://" + mqttHost).unmarshal().serialization()
+            .bean("cacheMicroservice", "processCommand")
             .choice()
             .when().simple("${body} is 'io.silverware.demos.devconf.kjar.AirConditioningCommand'").to("direct:ac")
             .when().simple("${body} is 'io.silverware.demos.devconf.kjar.DoorCommand'").to("direct:door")

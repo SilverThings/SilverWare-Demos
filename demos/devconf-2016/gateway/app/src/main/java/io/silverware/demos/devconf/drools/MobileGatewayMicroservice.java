@@ -19,16 +19,16 @@
  */
 package io.silverware.demos.devconf.drools;
 
-import io.silverware.demos.devconf.kjar.MobileButtonAction;
-import io.silverware.microservices.annotations.Microservice;
-import io.silverware.microservices.annotations.MicroserviceReference;
-import io.silverware.microservices.annotations.ParamName;
-
 import org.apache.camel.ProducerTemplate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
+
+import io.silverware.demos.devconf.kjar.MobileButtonAction;
+import io.silverware.microservices.annotations.Microservice;
+import io.silverware.microservices.annotations.MicroserviceReference;
+import io.silverware.microservices.annotations.ParamName;
 
 /**
  * Processes a mobile phone button event and creates the corresponding action on the action message topic.
