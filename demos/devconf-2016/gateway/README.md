@@ -1,4 +1,4 @@
-Complex demo to drive Intelligent Home demo on DevConf 2016
+Complex demo to drive Intelligent Home on DevConf 2016
 ===
 
 Prerequisities:
