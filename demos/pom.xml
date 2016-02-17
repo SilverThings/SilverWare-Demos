@@ -60,6 +60,8 @@
       <version.maven.project.reports>2.7</version.maven.project.reports>
       <version.maven.jar.plugin>2.4</version.maven.jar.plugin>
       <version.maven.dependency.plugin>2.8</version.maven.dependency.plugin>
+      <version.silverware>1.1</version.silverware>
+      <version.fabric8>2.2.0.redhat-079</version.fabric8>
    </properties>
    <modules>
       <module>openalt-2015</module>
@@ -71,7 +73,7 @@
          <dependency>
             <groupId>io.silverware</groupId>
             <artifactId>microservices-bom</artifactId>
-            <version>${project.version}</version>
+            <version>${version.silverware}</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
@@ -182,4 +184,47 @@
          </plugins>
       </pluginManagement>
    </build>
+   <profiles>
+      <profile>
+         <id>s2i</id>
+         <pluginRepositories>
+            <pluginRepository>
+               <id>fusesource.m2</id>
+               <name>FuseSource Community Release Repository</name>
+               <url>https://repo.fusesource.com/nexus/content/groups/public</url>
+               <snapshots>
+                  <enabled>false</enabled>
+               </snapshots>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+            </pluginRepository>
+            <pluginRepository>
+               <id>fusesource.ea</id>
+               <name>FuseSource Community Early Access Release Repository</name>
+               <url>https://repo.fusesource.com/nexus/content/groups/ea</url>
+               <snapshots>
+                  <enabled>false</enabled>
+               </snapshots>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+            </pluginRepository>
+            <pluginRepository>
+               <id>redhat.ga</id>
+               <name>Red Hat General Availability Repository</name>
+               <url>https://maven.repository.redhat.com/ga</url>
+               <snapshots>
+                  <enabled>false</enabled>
+               </snapshots>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+            </pluginRepository>
+         </pluginRepositories>
+      </profile>
+   </profiles>
 </project>
