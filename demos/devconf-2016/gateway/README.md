@@ -14,7 +14,7 @@ Password for mqtt:
 Verify password for mqtt: 
 ```
 
-Edit app/src/main/java/io/silverware/demos/devconf/mqtt/MqttRoutes.java to set appropriate IP addresses or ports. Optionally, these can be provided as system properties.
+Provide the following system properties either by setting the environment or by using -Dpropert=value parameters.
 
 * iot.host - IP address of the RPI based services in the home
 * mqtt.host - IP address of the A-MQ broker
@@ -24,6 +24,6 @@ Compile with:
 
 `mvn package`
 
-Run the jar file in app/target. Optionally use the following parameters to fix logging of some components:
+Run the jar file in app/target. Use the following parameters to fix logging of some components and provide system properties:
 
-`java -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -jar app/target/gateway-app-2.0-SNAPSHOT.jar`
+`java -Diot.host=127.0.0.1:8282 -Dmqtt.host=127.0.0.1:1883 -Dmobile.host=127.0.0.1:8283 -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -jar app/target/gateway-app-2.0-SNAPSHOT.jar`
