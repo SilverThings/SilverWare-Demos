@@ -14,6 +14,7 @@
     {
       "name": "APP_NAME",
       "value": "gateway-app-demo",
+      "required": true,
       "description": "Application Name"
     },
     {
@@ -52,11 +53,6 @@
       "required": true
     },
     {
-      "name": "BUILDER_VERSION",
-      "value": "1.0",
-      "description": "Builder version"
-    },
-    {
       "name": "APP_VERSION",
       "value": "1.0",
       "description": "Application version"
@@ -70,11 +66,6 @@
       "name": "MAVEN_ARGS_APPEND",
       "value": "",
       "description": "Extra arguments passed to mvn, e.g. for multi-module builds"
-    },
-    {
-      "name": "ARTIFACT_DIR",
-      "value": "devconf-2016/gateway/app/target/",
-      "description": "Maven build directory"
     },
     {
       "description": "Namespace in which the Fuse ImageStreams are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project.",
@@ -94,10 +85,6 @@
       "apiVersion": "v1",
       "kind": "Service",
       "metadata": {
-        "annotations": {
-          "prometheus.io/port": "9779",
-          "prometheus.io/scrape": "true"
-        },
         "labels": {
           "container": "java",
           "component": "${APP_NAME}",
@@ -129,8 +116,6 @@
       "apiVersion": "v1",
       "kind": "Service",
       "metadata": {
-        "annotations": {
-        },
         "labels": {
           "container": "java",
           "component": "${APP_NAME}",
@@ -269,7 +254,7 @@
             "from": {
               "kind": "ImageStreamTag",
               "namespace": "${IMAGE_STREAM_NAMESPACE}",
-              "name": "fis-java-openshift:${BUILDER_VERSION}"
+              "name": "fis-java-openshift:1.0"
             },
             "incremental": true,
             "forcePull": false,
@@ -280,7 +265,7 @@
               },
               {
                 "name": "ARTIFACT_DIR",
-                "value": "${ARTIFACT_DIR}"
+                "value": "devconf-2016/gateway/app/target/"
               },
               {
                 "name": "MAVEN_ARGS",
