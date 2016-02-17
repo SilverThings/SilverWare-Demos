@@ -41,6 +41,10 @@
          <artifactId>camel-jetty</artifactId>
       </dependency>
       <dependency>
+         <groupId>org.apache.camel</groupId>
+         <artifactId>camel-stream</artifactId>
+      </dependency>
+      <dependency>
          <groupId>io.silverware.demos</groupId>
          <artifactId>gateway-kjar</artifactId>
          <version>${project.version}</version>

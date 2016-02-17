@@ -19,12 +19,25 @@ declare MobileButtonAction
   @role( event )
 end
 
+declare WeatherAction
+  @expires( 2m )
+  @role( event )
+end
+
+rule "Weather action"
+when
+   $weather: WeatherAction() from entry-point "actions"
+then
+   System.out.println("Processing weather information");
+   commands.add(new UpdateStatusCommand("action18", 0xeeeeee, $weather.getWeatherString()));
+end
+
 rule "Day mood action"
 when
    $mood: MoodAction(mood == MoodAction.Mood.DAY) from entry-point "actions"
 then
    System.out.println("Processing mood day");
-   commands.add(new LightCommand(LightCommand.Place.ALL, LedStatus.OFF));
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedState.OFF));
    commands.add(new FireplaceCommand(FireplaceCommand.Fire.COLD));
    commands.add(new MediaCenterCommand(MediaCenterCommand.Media.OFF));
 end
@@ -34,10 +47,14 @@ when
    $mood: MoodAction(mood == MoodAction.Mood.EVENING) from entry-point "actions"
 then
    System.out.println("Processing mood evening");
-   commands.add(new LightCommand(LightCommand.Place.ALL, LedStatus.ON));
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedState.ON));
    commands.add(new FireplaceCommand(FireplaceCommand.Fire.HEAT));
    commands.add(new MediaCenterCommand(MediaCenterCommand.Media.NEWS));
-   commands.add("L10;r;10\n10;g;10\n10;b;10\n11;r;10\n11;g;10\n11;b;10\n14;r;10\n14;g;10\n14;b;10"); // set leds
+   commands.add(new BatchLightCommand(
+      new LightCommand(LightCommand.Place.LIVINGROOM_FIREPLACE, new LedState(10, 10, 10)),
+      new LightCommand(LightCommand.Place.LIVINGROOM_LIBRARY, new LedState(10, 10, 10)),
+      new LightCommand(LightCommand.Place.LIVINGROOM_COUCH, new LedState(10, 10, 10))
+   ));
 end
 
 rule "Sleep mood action"
@@ -45,12 +62,16 @@ when
    $mood: MoodAction(mood == MoodAction.Mood.SLEEP) from entry-point "actions"
 then
    System.out.println("Processing mood sleep");
-   commands.add(new LightCommand(LightCommand.Place.ALL, LedStatus.OFF));
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedState.OFF));
    commands.add(new FireplaceCommand(FireplaceCommand.Fire.COLD));
    commands.add(new MediaCenterCommand(MediaCenterCommand.Media.OFF));
    commands.add(new DoorCommand(DoorCommand.Door.FRONT, 0)); // close
    commands.add(new DoorCommand(DoorCommand.Door.REAR, 0)); // close
-   commands.add("L3;r;0\n3;g;5\n3;b;0\n7;r;0\n7;g;5\n7;b;0\n8;r;0\n8;g;5\n8;b;0"); // set leds
+   commands.add(new BatchLightCommand(
+      new LightCommand(LightCommand.Place.BATHROOM_TUB, new LedState(0, 5, 0)),
+      new LightCommand(LightCommand.Place.CORRIDOR, new LedState(0, 5, 0)),
+      new LightCommand(LightCommand.Place.ENTRANCE, new LedState(0, 5, 0))
+   ));
 end
 
 rule "Romantic mood command"
@@ -58,7 +79,7 @@ when
    $mood: MoodAction(mood == MoodAction.Mood.ROMANTIC) from entry-point "actions"
 then
    System.out.println("Processing mood romantic");
-   commands.add(new LightCommand(LightCommand.Place.ALL, new LedStatus(50, 10, 10)));
+   commands.add(new LightCommand(LightCommand.Place.ALL, new LedState(50, 10, 10)));
    commands.add(new FireplaceCommand(FireplaceCommand.Fire.HEAT));
    commands.add(new MediaCenterCommand(MediaCenterCommand.Media.ROMANCE));
    commands.add(new DoorCommand(DoorCommand.Door.FRONT, 0)); // close
@@ -151,8 +172,8 @@ when
 then
    System.out.println("Mobile button 11");
    commands.add(new LightCommand(LightCommand.Place.BEDROOM, LedState.ON));
-   commands.add(new LightCommand(LightCommand.Place.BED1, LedState.ON));
-   commands.add(new LightCommand(LightCommand.Place.BED2, LedState.ON));
+   commands.add(new LightCommand(LightCommand.Place.BED_WINDOW, LedState.ON));
+   commands.add(new LightCommand(LightCommand.Place.BED_WARDROBE, LedState.ON));
 end
 
 rule "Mobile Button 12 - Bedroom off"
@@ -161,8 +182,8 @@ when
 then
    System.out.println("Mobile button 12");
    commands.add(new LightCommand(LightCommand.Place.BEDROOM, LedState.OFF));
-   commands.add(new LightCommand(LightCommand.Place.BED1, LedState.OFF));
-   commands.add(new LightCommand(LightCommand.Place.BED2, LedState.OFF));
+   commands.add(new LightCommand(LightCommand.Place.BED_WINDOW, LedState.OFF));
+   commands.add(new LightCommand(LightCommand.Place.BED_WARDROBE, LedState.OFF));
 end
 
 rule "Mobile Button 13 - Bed 1 On"
@@ -170,7 +191,7 @@ when
    $mobile: MobileButtonAction(id == "13") from entry-point "actions"
 then
    System.out.println("Mobile button 13");
-   commands.add(new LightCommand(LightCommand.Place.BED1, LedState.ON));
+   commands.add(new LightCommand(LightCommand.Place.BED_WINDOW, LedState.ON));
 end
 
 rule "Mobile Button 14 - Bed 1 Off"
@@ -178,7 +199,7 @@ when
    $mobile: MobileButtonAction(id == "14") from entry-point "actions"
 then
    System.out.println("Mobile button 14");
-   commands.add(new LightCommand(LightCommand.Place.BED1, LedState.OFF));
+   commands.add(new LightCommand(LightCommand.Place.BED_WINDOW, LedState.OFF));
 end
 
 rule "Mobile Button 15 - Bed 2 On"
@@ -186,7 +207,7 @@ when
    $mobile: MobileButtonAction(id == "15") from entry-point "actions"
 then
    System.out.println("Mobile button 15");
-   commands.add(new LightCommand(LightCommand.Place.BED2, LedState.ON));
+   commands.add(new LightCommand(LightCommand.Place.BED_WARDROBE, LedState.ON));
 end
 
 rule "Mobile Button 16 - Bed 2 Off"
@@ -194,7 +215,7 @@ when
    $mobile: MobileButtonAction(id == "16") from entry-point "actions"
 then
    System.out.println("Mobile button 16");
-   commands.add(new LightCommand(LightCommand.Place.BED2, LedState.OFF));
+   commands.add(new LightCommand(LightCommand.Place.BED_WARDROBE, LedState.OFF));
 end
 
 rule "Mobile Button 17 - Reset"

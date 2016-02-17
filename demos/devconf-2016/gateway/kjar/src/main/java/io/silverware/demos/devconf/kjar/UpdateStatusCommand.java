@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------------\
- * PerfCake
+ * SilverWare
  *  
  * Copyright (C) 2010 - 2013 the original author or authors.
  *  
@@ -22,20 +22,32 @@ package io.silverware.demos.devconf.kjar;
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class WeatherAction extends Action {
+public class UpdateStatusCommand extends Command {
 
-   private Weather weather;
+   private String itemId = "";
+   private long color = 0xeeeeee;
+   private String status = "";
 
-   public WeatherAction(final int temperature, final int humidity) {
-      weather = new Weather(temperature, humidity);
+   public UpdateStatusCommand(final String itemId, final long color, final String status) {
+      this.itemId = itemId;
+      this.color = color;
+      this.status = status;
    }
 
-   public WeatherAction(final Weather weather) {
-      this.weather = weather;
+   public String getItemId() {
+      return itemId;
    }
 
-   public Weather getWeather() {
-      return weather;
+   public long getColor() {
+      return color;
+   }
+
+   public String getStatus() {
+      return status;
+   }
+
+   public String getUpdateMessage() {
+      return itemId + ":" + color + ":" + status;
    }
 
    @Override
@@ -47,25 +59,32 @@ public class WeatherAction extends Action {
          return false;
       }
 
-      final WeatherAction that = (WeatherAction) o;
+      final UpdateStatusCommand that = (UpdateStatusCommand) o;
 
-      return weather.equals(that.weather);
+      if (color != that.color) {
+         return false;
+      }
+      if (!itemId.equals(that.itemId)) {
+         return false;
+      }
+      return status.equals(that.status);
 
    }
 
    @Override
    public int hashCode() {
-      return weather.hashCode();
-   }
-
-   public String getWeatherString() {
-      return weather.getTemperature() + "°C / " + weather.getHumidity() + "%";
+      int result = itemId.hashCode();
+      result = 31 * result + (int) (color ^ (color >>> 32));
+      result = 31 * result + status.hashCode();
+      return result;
    }
 
    @Override
    public String toString() {
-      return "WeatherAction{" +
-            "weather=" + weather +
+      return "UpdateStatusCommand{" +
+            "itemId='" + itemId + '\'' +
+            ", color=" + color +
+            ", status='" + status + '\'' +
             '}';
    }
 }

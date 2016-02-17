@@ -42,18 +42,23 @@ public class IntegrationRoutes extends RouteBuilder {
 
       // periodically check Intelligent Home's REST interface to obtain weather status, process the status as an action
       from("timer://foo?period=5000").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/sensorData").bean("weatherMicroservice", "processWeather");
+      // comment out the previous route and enable the following one for debugging purposes
+      // from("timer://foo?period=5000").setBody().constant("{ \"temperature\" : 23, \"humidity\" : 42, ").bean("weatherMicroservice", "processWeather");
 
       // creates a new action
-      from("direct:actions").to("mqtt:outActions?publishTopicName=ih/message/actions&userName=mqtt&password=mqtt&host=tcp://" + mqttHost);
+      from("direct:actions").marshal().serialization().to("mqtt:outActions?publishTopicName=ih/message/actions&userName=mqtt&password=mqtt&host=tcp://" + mqttHost);
 
       // creates a new command
-      from("direct:commands").to("mqtt:outCommands?publishTopicName=ih/message/commands&userName=mqtt&password=mqtt&host=tcp://" + mqttHost);
+      from("direct:commands").marshal().serialization().to("mqtt:outCommands?publishTopicName=ih/message/commands&userName=mqtt&password=mqtt&host=tcp://" + mqttHost);
 
       // sends an update message to the mobile phone
       from("direct:mobile").to("mqtt:outMobile?publishTopicName=ih/message/mobile&userName=mqtt&password=mqtt&host=tcp://" + mqttHost);
 
+      // Append the following to the previous route to get debug output
+      //      .setBody().simple("Weather: ${body}").to("stream:out");
+
       // process actions in Drools
-      from("mqtt:inActions?subscribeTopicName=ih/message/actions&userName=mqtt&password=mqtt&host=tcp://" + mqttHost).bean("droolsMicroservice", "processAction");
+      from("mqtt:inActions?subscribeTopicName=ih/message/actions&userName=mqtt&password=mqtt&host=tcp://" + mqttHost).unmarshal().serialization().bean("droolsMicroservice", "processAction");
    }
 
 }

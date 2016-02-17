@@ -82,15 +82,15 @@ public class BatchLightCommand extends Command {
       final StringBuilder sb = new StringBuilder();
 
       commands.forEach(l -> {
-         sb.append(l.getPlace().ordinal());
+         sb.append(l.getPlace().getLed());
          sb.append(";r;");
          sb.append(l.getState().getR());
          sb.append("\n");
-         sb.append(l.getPlace().ordinal());
+         sb.append(l.getPlace().getLed());
          sb.append(";g;");
          sb.append(l.getState().getG());
          sb.append("\n");
-         sb.append(l.getPlace().ordinal());
+         sb.append(l.getPlace().getLed());
          sb.append(";b;");
          sb.append(l.getState().getB());
          sb.append("\n");

@@ -49,6 +49,7 @@ public class MobileGatewayMicroservice {
    }
 
    public void mobileAction(@ParamName("button") final String button) {
+      log.info("Mobile phone button {}", button);
       producer.sendBody("direct:actions", new MobileButtonAction(button));
    }
 

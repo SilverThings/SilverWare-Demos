@@ -19,10 +19,12 @@
  */
 package io.silverware.demos.devconf.kjar;
 
+import java.io.Serializable;
+
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class LedState {
+public class LedState implements Serializable {
 
    public static final LedState OFF = new LedState(0, 0, 0);
    public static final LedState ON = new LedState(100, 100, 100);

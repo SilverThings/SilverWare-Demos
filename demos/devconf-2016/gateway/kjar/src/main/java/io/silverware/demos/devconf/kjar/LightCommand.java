@@ -25,10 +25,22 @@ package io.silverware.demos.devconf.kjar;
 public class LightCommand extends Command {
 
    public enum Place {
-      CORRIDOR, JUNK, BED1, BED2, BEDROOM, BATHROOM, KITCHEN, DININGROOM, LIVINGROOM, ALL
+      JUNK(0),KITCHEN_COOK(1), KITCHEN_SINK(2), BATHROOM_TUB(3), BATHROOM_SINK(4), KITCHEN_GARDEN(5), KITCHEN_TABLE(6),
+      CORRIDOR(7), ENTRANCE(8), BEDROOM(9), LIVINGROOM_FIREPLACE(10), LIVINGROOM_LIBRARY(11), BED_WINDOW(12), BED_WARDROBE(13),
+      LIVINGROOM_COUCH(14), ALL(0xffff);
+
+      private int led;
+
+      Place(final int led) {
+         this.led = led;
+      }
+
+      public int getLed() {
+         return led;
+      }
    }
 
-   private Place place = Place.CORRIDOR;
+   private Place place = Place.ALL;
    private LedState state = LedState.OFF;
 
    public LightCommand(final Place place, final LedState state) {

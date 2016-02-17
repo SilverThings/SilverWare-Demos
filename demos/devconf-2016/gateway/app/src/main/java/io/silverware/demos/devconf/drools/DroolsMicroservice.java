@@ -34,6 +34,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import javax.inject.Inject;
 
 /**
@@ -47,6 +48,9 @@ public class DroolsMicroservice {
 
    private static final Logger log = LogManager.getLogger(DroolsMicroservice.class);
 
+   // KieSession is not thread safe, we need to synchronize calls
+   private static Semaphore sync = new Semaphore(1);
+
    @Inject
    @KSession
    private KieSession session;
@@ -55,20 +59,28 @@ public class DroolsMicroservice {
    @MicroserviceReference
    private ProducerTemplate producer;
 
-   private void processActions(final List<Action> actions) {
-      final List<Command> commands = new ArrayList<>();
-      final EntryPoint entryPoint = session.getEntryPoint("actions");
-      session.setGlobal("producer", producer);
-      session.setGlobal("commands", commands);
+   public void processActions(final List<Action> actions) throws InterruptedException {
+      log.info("Firing rules for action {}", actions);
 
-      actions.forEach(entryPoint::insert);
+      sync.acquire();
 
-      session.fireAllRules();
+      try {
+         final List<Command> commands = new ArrayList<>();
+         final EntryPoint entryPoint = session.getEntryPoint("actions");
+         session.setGlobal("producer", producer);
+         session.setGlobal("commands", commands);
 
-      commands.forEach(cmd -> producer.sendBody("direct:commands", cmd));
+         actions.forEach(entryPoint::insert);
+
+         session.fireAllRules();
+
+         commands.forEach(cmd -> producer.asyncSendBody("direct:commands", cmd));
+      } finally {
+         sync.release();
+      }
    }
 
-   private void processAction(final Action action) {
+   public void processAction(final Action action) throws InterruptedException {
       processActions(Collections.singletonList(action));
    }
 

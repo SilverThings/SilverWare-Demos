@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------------\
- * PerfCake
+ * SilverWare
  *  
  * Copyright (C) 2010 - 2013 the original author or authors.
  *  
@@ -19,23 +19,27 @@
  */
 package io.silverware.demos.devconf.kjar;
 
+import java.io.Serializable;
+
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class WeatherAction extends Action {
+public class Weather implements Serializable {
 
-   private Weather weather;
+   private int temperature;
+   private int humidity;
 
-   public WeatherAction(final int temperature, final int humidity) {
-      weather = new Weather(temperature, humidity);
+   public Weather(final int temperature, final int humidity) {
+      this.temperature = temperature;
+      this.humidity = humidity;
    }
 
-   public WeatherAction(final Weather weather) {
-      this.weather = weather;
+   public int getTemperature() {
+      return temperature;
    }
 
-   public Weather getWeather() {
-      return weather;
+   public int getHumidity() {
+      return humidity;
    }
 
    @Override
@@ -47,25 +51,28 @@ public class WeatherAction extends Action {
          return false;
       }
 
-      final WeatherAction that = (WeatherAction) o;
+      final Weather that = (Weather) o;
 
-      return weather.equals(that.weather);
+      if (temperature != that.temperature) {
+         return false;
+      }
+      return humidity == that.humidity;
 
    }
 
    @Override
    public int hashCode() {
-      return weather.hashCode();
-   }
-
-   public String getWeatherString() {
-      return weather.getTemperature() + "°C / " + weather.getHumidity() + "%";
+      int result = temperature;
+      result = 31 * result + humidity;
+      return result;
    }
 
    @Override
    public String toString() {
-      return "WeatherAction{" +
-            "weather=" + weather +
+      return "Weather{" +
+            "temperature=" + temperature +
+            ", humidity=" + humidity +
             '}';
    }
+
 }
