@@ -19,10 +19,47 @@
  */
 package io.silverware.demos.devconf.kjar;
 
-import java.io.Serializable;
-
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class Command implements Serializable {
+public class MoodAction extends Action {
+
+   public enum Mood {
+      SLEEP, ROMANTIC, EVENING, DAY
+   }
+
+   private Mood mood;
+
+   public MoodAction(final Mood mood) {
+      this.mood = mood;
+   }
+
+   public Mood getMood() {
+      return mood;
+   }
+
+   @Override
+   public boolean equals(final Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+
+      final MoodAction that = (MoodAction) o;
+
+      return mood == that.mood;
+
+   }
+
+   @Override
+   public int hashCode() {
+      return mood.hashCode();
+   }
+
+   @Override
+   public String toString() {
+      return "M" + mood.ordinal();
+   }
 }

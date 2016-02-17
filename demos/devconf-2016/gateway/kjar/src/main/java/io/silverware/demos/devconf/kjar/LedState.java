@@ -22,20 +22,29 @@ package io.silverware.demos.devconf.kjar;
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class MoodCommand extends Command {
+public class LedState {
 
-   public enum Mood {
-      SLEEP, ROMANTIC, EVENING, DAY
+   public static final LedState OFF = new LedState(0, 0, 0);
+   public static final LedState ON = new LedState(100, 100, 100);
+
+   private int r, g, b;
+
+   public LedState(final int r, final int g, final int b) {
+      this.r = r;
+      this.g = g;
+      this.b = b;
    }
 
-   private Mood mood;
-
-   public MoodCommand(final Mood mood) {
-      this.mood = mood;
+   public int getR() {
+      return r;
    }
 
-   public Mood getMood() {
-      return mood;
+   public int getG() {
+      return g;
+   }
+
+   public int getB() {
+      return b;
    }
 
    @Override
@@ -47,19 +56,32 @@ public class MoodCommand extends Command {
          return false;
       }
 
-      final MoodCommand that = (MoodCommand) o;
+      final LedState ledState = (LedState) o;
 
-      return mood == that.mood;
+      if (r != ledState.r) {
+         return false;
+      }
+      if (g != ledState.g) {
+         return false;
+      }
+      return b == ledState.b;
 
    }
 
    @Override
    public int hashCode() {
-      return mood.hashCode();
+      int result = r;
+      result = 31 * result + g;
+      result = 31 * result + b;
+      return result;
    }
 
    @Override
    public String toString() {
-      return "M" + mood.ordinal();
+      return "LedState{" +
+            "r=" + r +
+            ", g=" + g +
+            ", b=" + b +
+            '}';
    }
 }

@@ -25,19 +25,18 @@ import io.silverware.demos.devconf.kjar.DoorCommand;
 import io.silverware.demos.devconf.kjar.FireplaceCommand;
 import io.silverware.demos.devconf.kjar.LightCommand;
 import io.silverware.demos.devconf.kjar.MediaCenterCommand;
-import io.silverware.demos.devconf.kjar.MoodCommand;
+import io.silverware.demos.devconf.kjar.MoodAction;
+import io.silverware.demos.devconf.kjar.WeatherAction;
 import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
 import io.silverware.microservices.annotations.ParamName;
 import io.silverware.microservices.providers.cdi.MicroservicesStartedEvent;
 
-import org.apache.camel.Endpoint;
 import org.apache.camel.ProducerTemplate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kie.api.cdi.KSession;
-import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 
@@ -67,7 +66,7 @@ public class GatewayMicroservice {
       log.info("GatewayMicroservice constructor");
    }
 
-   public void processAcutor(@ParamName("command") final String command) {
+  /* public void processAcutor(@ParamName("command") final String command) {
       final List<Command> commands = new ArrayList<>();
 
       log.info("Processing acutor: {}", command);
@@ -78,7 +77,7 @@ public class GatewayMicroservice {
 
          if (command != null) {
             if (command.startsWith("M")) {
-               commands.add(new MoodCommand(MoodCommand.Mood.values()[Integer.parseInt(command.substring(1))]));
+               commands.add(new MoodAction(MoodAction.Mood.values()[Integer.parseInt(command.substring(1))]));
             }
          }
 
@@ -181,16 +180,16 @@ public class GatewayMicroservice {
 
       switch (btn) {
          case 1:
-            commands.add(new MoodCommand(MoodCommand.Mood.DAY));
+            commands.add(new MoodAction(MoodAction.Mood.DAY));
             break;
          case 2:
-            commands.add(new MoodCommand(MoodCommand.Mood.EVENING));
+            commands.add(new MoodAction(MoodAction.Mood.EVENING));
             break;
          case 3:
-            commands.add(new MoodCommand(MoodCommand.Mood.SLEEP));
+            commands.add(new MoodAction(MoodAction.Mood.SLEEP));
             break;
          case 4:
-            commands.add(new MoodCommand(MoodCommand.Mood.ROMANTIC));
+            commands.add(new MoodAction(MoodAction.Mood.ROMANTIC));
             break;
          case 5:
             commands.add(new AirConditioningCommand(AirConditioningCommand.Ac.COOLING));
@@ -250,34 +249,5 @@ public class GatewayMicroservice {
       if (commands.size() > 0) {
          processCommands(commands);
       }
-   }
-
-   public void processWeather(@ParamName("status") final String status) {
-      log.info("Weather status {}", status);
-
-      final String tempField = "\"temperature\" : ";
-      String tempStr = status.substring(status.indexOf(tempField) + tempField.length());
-      tempStr = tempStr.substring(0, tempStr.indexOf(","));
-      int temp = Integer.parseInt(tempStr);
-
-      final String humidityField = "\"humidity\" : ";
-      String humidityStr = status.substring(status.indexOf(humidityField) + humidityField.length());
-      humidityStr = humidityStr.substring(0, humidityStr.indexOf(","));
-      int humidity = Integer.parseInt(humidityStr);
-
-      producer.sendBody("direct:mobile", "action18:" + 0xeeeeee + ":" + temp + "°C / " + humidity + "%");
-   }
-
-   public void directAcutor(@ParamName("command") final String command) {
-      producer.sendBody("direct:acutor", command);
-   }
-
-   public void eventObserver(@Observes MicroservicesStartedEvent event) {
-      log.info("GatewayMicroservice MicroservicesStartedEvent {}", session);
-      if (session != null) {
-      	 session.insert("test");
-          session.fireAllRules();
-          log.info("Fired!");
-      }
-   }
+   }*/
 }

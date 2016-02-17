@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------------\
- * SilverWare
+ * PerfCake
  *  
  * Copyright (C) 2010 - 2013 the original author or authors.
  *  
@@ -22,26 +22,22 @@ package io.silverware.demos.devconf.kjar;
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class LightCommand extends Command {
+public class WeatherAction extends Action {
 
-   public enum Place {
-      CORRIDOR, JUNK, BED1, BED2, BEDROOM, BATHROOM, KITCHEN, DININGROOM, LIVINGROOM, ALL
+   private int temperature;
+   private int humidity;
+
+   public WeatherAction(final int temperature, final int humidity) {
+      this.temperature = temperature;
+      this.humidity = humidity;
    }
 
-   private Place place = Place.CORRIDOR;
-   private LedState state = LedState.OFF;
-
-   public LightCommand(final Place place, final LedState state) {
-      this.place = place;
-      this.state = state;
+   public int getTemperature() {
+      return temperature;
    }
 
-   public Place getPlace() {
-      return place;
-   }
-
-   public LedState getState() {
-      return state;
+   public int getHumidity() {
+      return humidity;
    }
 
    @Override
@@ -53,27 +49,27 @@ public class LightCommand extends Command {
          return false;
       }
 
-      final LightCommand that = (LightCommand) o;
+      final WeatherAction that = (WeatherAction) o;
 
-      if (place != that.place) {
+      if (temperature != that.temperature) {
          return false;
       }
-      return state.equals(that.state);
+      return humidity == that.humidity;
 
    }
 
    @Override
    public int hashCode() {
-      int result = place.hashCode();
-      result = 31 * result + state.hashCode();
+      int result = temperature;
+      result = 31 * result + humidity;
       return result;
    }
 
    @Override
    public String toString() {
-      return "LightCommand{" +
-            "place=" + place +
-            ", state=" + state +
+      return "WeatherAction{" +
+            "temperature=" + temperature +
+            ", humidity=" + humidity +
             '}';
    }
 }

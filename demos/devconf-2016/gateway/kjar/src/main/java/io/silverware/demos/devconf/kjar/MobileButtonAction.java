@@ -19,10 +19,45 @@
  */
 package io.silverware.demos.devconf.kjar;
 
-import java.io.Serializable;
-
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class Command implements Serializable {
+public class MobileButtonAction extends Action {
+
+   private String id = "";
+
+   public MobileButtonAction(final String id) {
+      this.id = id;
+   }
+
+   public String getId() {
+      return id;
+   }
+
+   @Override
+   public boolean equals(final Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+
+      final MobileButtonAction that = (MobileButtonAction) o;
+
+      return id.equals(that.id);
+
+   }
+
+   @Override
+   public int hashCode() {
+      return id.hashCode();
+   }
+
+   @Override
+   public String toString() {
+      return "MobileButtonAction{" +
+            "id='" + id + '\'' +
+            '}';
+   }
 }

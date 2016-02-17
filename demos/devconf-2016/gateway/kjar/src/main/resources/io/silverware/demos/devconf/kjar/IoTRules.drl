@@ -1,0 +1,211 @@
+package io.silverware.demos.devconf.kjar
+
+import java.lang.String;
+import java.util.List;
+import io.silverware.demos.devconf.kjar.*;
+
+import org.apache.camel.ProducerTemplate;
+
+global java.util.List commands;
+global org.apache.camel.ProducerTemplate producer;
+
+declare MoodAction
+  @expires( 2m )
+  @role( event )
+end
+
+declare MobileButtonAction
+  @expires( 2m )
+  @role( event )
+end
+
+rule "Day mood action"
+when
+   $mood: MoodAction(mood == MoodAction.Mood.DAY) from entry-point "actions"
+then
+   System.out.println("Processing mood day");
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedStatus.OFF));
+   commands.add(new FireplaceCommand(FireplaceCommand.Fire.COLD));
+   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.OFF));
+end
+
+rule "Evening mood action"
+when
+   $mood: MoodAction(mood == MoodAction.Mood.EVENING) from entry-point "actions"
+then
+   System.out.println("Processing mood evening");
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedStatus.ON));
+   commands.add(new FireplaceCommand(FireplaceCommand.Fire.HEAT));
+   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.NEWS));
+   commands.add("L10;r;10\n10;g;10\n10;b;10\n11;r;10\n11;g;10\n11;b;10\n14;r;10\n14;g;10\n14;b;10"); // set leds
+end
+
+rule "Sleep mood action"
+when
+   $mood: MoodAction(mood == MoodAction.Mood.SLEEP) from entry-point "actions"
+then
+   System.out.println("Processing mood sleep");
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedStatus.OFF));
+   commands.add(new FireplaceCommand(FireplaceCommand.Fire.COLD));
+   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.OFF));
+   commands.add(new DoorCommand(DoorCommand.Door.FRONT, 0)); // close
+   commands.add(new DoorCommand(DoorCommand.Door.REAR, 0)); // close
+   commands.add("L3;r;0\n3;g;5\n3;b;0\n7;r;0\n7;g;5\n7;b;0\n8;r;0\n8;g;5\n8;b;0"); // set leds
+end
+
+rule "Romantic mood command"
+when
+   $mood: MoodAction(mood == MoodAction.Mood.ROMANTIC) from entry-point "actions"
+then
+   System.out.println("Processing mood romantic");
+   commands.add(new LightCommand(LightCommand.Place.ALL, new LedStatus(50, 10, 10)));
+   commands.add(new FireplaceCommand(FireplaceCommand.Fire.HEAT));
+   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.ROMANCE));
+   commands.add(new DoorCommand(DoorCommand.Door.FRONT, 0)); // close
+   commands.add(new DoorCommand(DoorCommand.Door.REAR, 0)); // close
+end
+
+rule "Mobile Button 1 - Mood Day"
+when
+   $mobile: MobileButtonAction(id == "1") from entry-point "actions"
+then
+   System.out.println("Mobile button 1");
+   entryPoints["actions"].insert(new MoodAction(MoodAction.Mood.DAY));
+end
+
+rule "Mobile Button 2 - Mood Evening"
+when
+   $mobile: MobileButtonAction(id == "2") from entry-point "actions"
+then
+   System.out.println("Mobile button 2");
+   entryPoints["actions"].insert(new MoodAction(MoodAction.Mood.EVENING));
+end
+
+rule "Mobile Button 3 - Mood Sleep"
+when
+   $mobile: MobileButtonAction(id == "3") from entry-point "actions"
+then
+   System.out.println("Mobile button 3");
+   entryPoints["actions"].insert(new MoodAction(MoodAction.Mood.SLEEP));
+end
+
+rule "Mobile Button 4 - Mood Romantic"
+when
+   $mobile: MobileButtonAction(id == "4") from entry-point "actions"
+then
+   System.out.println("Mobile button 4");
+   entryPoints["actions"].insert(new MoodAction(MoodAction.Mood.ROMANTIC));
+end
+
+rule "Mobile Button 5 - A/C switch"
+when
+   $mobile: MobileButtonAction(id == "5") from entry-point "actions"
+then
+   System.out.println("Mobile button 5");
+   commands.add(new AirConditioningCommand(AirConditioningCommand.Ac.COOLING));
+end
+
+rule "Mobile Button 6 - A/C switch"
+when
+   $mobile: MobileButtonAction(id == "6") from entry-point "actions"
+then
+   System.out.println("Mobile button 6");
+   commands.add(new AirConditioningCommand(AirConditioningCommand.Ac.NORMAL));
+end
+
+rule "Mobile Button 7 - Front door"
+when
+   $mobile: MobileButtonAction(id == "7") from entry-point "actions"
+then
+   System.out.println("Mobile button 7");
+   commands.add(new DoorCommand(DoorCommand.Door.FRONT, 100)); // open
+end
+
+rule "Mobile Button 8 - Front door"
+when
+   $mobile: MobileButtonAction(id == "8") from entry-point "actions"
+then
+   System.out.println("Mobile button 8");
+   commands.add(new DoorCommand(DoorCommand.Door.FRONT, 0)); // close
+end
+
+rule "Mobile Button 9 - Rear door"
+when
+   $mobile: MobileButtonAction(id == "9") from entry-point "actions"
+then
+   System.out.println("Mobile button 9");
+   commands.add(new DoorCommand(DoorCommand.Door.REAR, 100)); // open
+end
+
+rule "Mobile Button 10 - Rear door"
+when
+   $mobile: MobileButtonAction(id == "10") from entry-point "actions"
+then
+   System.out.println("Mobile button 10");
+   commands.add(new DoorCommand(DoorCommand.Door.REAR, 0)); // close
+end
+
+rule "Mobile Button 11 - Bedroom on"
+when
+   $mobile: MobileButtonAction(id == "11") from entry-point "actions"
+then
+   System.out.println("Mobile button 11");
+   commands.add(new LightCommand(LightCommand.Place.BEDROOM, LedState.ON));
+   commands.add(new LightCommand(LightCommand.Place.BED1, LedState.ON));
+   commands.add(new LightCommand(LightCommand.Place.BED2, LedState.ON));
+end
+
+rule "Mobile Button 12 - Bedroom off"
+when
+   $mobile: MobileButtonAction(id == "12") from entry-point "actions"
+then
+   System.out.println("Mobile button 12");
+   commands.add(new LightCommand(LightCommand.Place.BEDROOM, LedState.OFF));
+   commands.add(new LightCommand(LightCommand.Place.BED1, LedState.OFF));
+   commands.add(new LightCommand(LightCommand.Place.BED2, LedState.OFF));
+end
+
+rule "Mobile Button 13 - Bed 1 On"
+when
+   $mobile: MobileButtonAction(id == "13") from entry-point "actions"
+then
+   System.out.println("Mobile button 13");
+   commands.add(new LightCommand(LightCommand.Place.BED1, LedState.ON));
+end
+
+rule "Mobile Button 14 - Bed 1 Off"
+when
+   $mobile: MobileButtonAction(id == "14") from entry-point "actions"
+then
+   System.out.println("Mobile button 14");
+   commands.add(new LightCommand(LightCommand.Place.BED1, LedState.OFF));
+end
+
+rule "Mobile Button 15 - Bed 2 On"
+when
+   $mobile: MobileButtonAction(id == "15") from entry-point "actions"
+then
+   System.out.println("Mobile button 15");
+   commands.add(new LightCommand(LightCommand.Place.BED2, LedState.ON));
+end
+
+rule "Mobile Button 16 - Bed 2 Off"
+when
+   $mobile: MobileButtonAction(id == "16") from entry-point "actions"
+then
+   System.out.println("Mobile button 16");
+   commands.add(new LightCommand(LightCommand.Place.BED2, LedState.OFF));
+end
+
+rule "Mobile Button 17 - Reset"
+when
+   $mobile: MobileButtonAction(id == "17") from entry-point "actions"
+then
+   System.out.println("Mobile button 17");
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedState.OFF));
+   commands.add(new FireplaceCommand(FireplaceCommand.Fire.COLD));
+   commands.add(new AirConditioningCommand(AirConditioningCommand.Ac.NORMAL));
+   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.OFF));
+   commands.add(new DoorCommand(DoorCommand.Door.FRONT, 0));
+   commands.add(new DoorCommand(DoorCommand.Door.REAR, 0));
+end

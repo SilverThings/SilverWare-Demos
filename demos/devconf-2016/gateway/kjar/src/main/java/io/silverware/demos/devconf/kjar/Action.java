@@ -24,5 +24,5 @@ import java.io.Serializable;
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
-public class Command implements Serializable {
+public class Action implements Serializable {
 }
