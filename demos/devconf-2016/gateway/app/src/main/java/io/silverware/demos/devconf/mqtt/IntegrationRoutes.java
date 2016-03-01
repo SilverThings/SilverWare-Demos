@@ -42,7 +42,7 @@ public class IntegrationRoutes extends RouteBuilder {
       from("jetty:http://" + mobileHost + "/mobile").setBody().simple("${in.header.button}").bean("mobileGatewayMicroservice", "mobileAction");
 
       // periodically check Intelligent Home's REST interface to obtain weather status, process the status as an action
-      from("timer://foo?period=5000").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/sensorData").to("direct:weather");
+      //from("timer://foo?period=5000").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/sensorData").to("direct:weather");
       // comment out the previous route and enable the following one for debugging purposes
       // from("timer://foo?period=5000").setBody().constant("{ \"temperature\" : 23, \"humidity\" : 42, ").to("direct:weather");
 
