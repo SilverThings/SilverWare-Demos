@@ -64,12 +64,23 @@ public class RgbLedBatchProcessor implements Processor {
          } else {
             pwmBatch.append("\n");
          }
-         pwmBatch.append(config.getRgbLedPca9685Address(led, channel)); // I2C address
-         pwmBatch.append(";");
-         pwmBatch.append(config.getRgbLedPwm(led, channel)); // pwm output
-         pwmBatch.append(";");
-         pwmBatch.append(Integer.valueOf((int) (40.95 * value))); // pwm value
+         if (led == 0xFFFF) {
+            for (int i = 0; i < Configuration.RGB_LED_COUNT; i++) {
+               batchAppend(pwmBatch, i, channel, value);
+            }
+         } else {
+            batchAppend(pwmBatch, led, channel, value);
+         }
+
       }
       msg.setBody(pwmBatch.toString());
+   }
+
+   private void batchAppend(StringBuffer batch, int led, String channel, int value) {
+      batch.append(config.getRgbLedPca9685Address(led, channel)); // I2C address
+      batch.append(";");
+      batch.append(config.getRgbLedPwm(led, channel)); // pwm output
+      batch.append(";");
+      batch.append(Integer.valueOf((int) (40.95 * value))); // pwm value
    }
 }
