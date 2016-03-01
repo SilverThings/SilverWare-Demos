@@ -57,7 +57,13 @@ public class WorkflowRoutes extends RouteBuilder {
       from("direct:led").choice()
                         .when().simple("${body.place} == '" + LightCommand.Place.ALL + "'").to("direct:ledAll")
                         .otherwise().to("direct:ledSingle");
-      from("direct:ledSingle").log("Unimplemented ledSingle route");
+      from("direct:ledSingle").setHeader(Exchange.HTTP_METHOD, constant("GET"))
+                              //.setHeader(Exchange.HTTP_QUERY, simple("led=${body.place.led}&r=${body.state.r}&g=${body.state.g}&b=${body.state.b}"))
+                              .setHeader("led", simple("${body.place.led}"))
+                              .setHeader("r", simple("${body.state.r}"))
+                              .setHeader("g", simple("${body.state.g}"))
+                              .setHeader("b", simple("${body.state.b}"))
+                              .setBody().constant("").to("jetty:http://" + iotHost + "/led/setrgb");
       from("direct:ledAll").setHeader(Exchange.HTTP_METHOD, constant("GET"))
                            .setHeader("r", simple("${body.state.r}"))
                            .setHeader("g", simple("${body.state.g}"))

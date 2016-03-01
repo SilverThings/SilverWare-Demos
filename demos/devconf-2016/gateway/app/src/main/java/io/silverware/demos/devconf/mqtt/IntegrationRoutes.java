@@ -34,6 +34,7 @@ public class IntegrationRoutes extends RouteBuilder {
    @Override
    public void configure() throws Exception {
       final String iotHost = System.getProperty("iot.host", "10.40.2.210:8282");
+      final String iotMqttHost = System.getProperty("iot.mqtt.host", "10.40.2.210:1883");
       final String mqttHost = System.getProperty("mqtt.host", "10.40.3.60:1883");
       final String mobileHost = System.getProperty("mobile.host", "0.0.0.0:8283");
 
@@ -41,9 +42,14 @@ public class IntegrationRoutes extends RouteBuilder {
       from("jetty:http://" + mobileHost + "/mobile").setBody().simple("${in.header.button}").bean("mobileGatewayMicroservice", "mobileAction");
 
       // periodically check Intelligent Home's REST interface to obtain weather status, process the status as an action
-      from("timer://foo?period=5000").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/sensorData").bean("weatherMicroservice", "processWeather");
+      from("timer://foo?period=5000").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/sensorData").to("direct:weather");
       // comment out the previous route and enable the following one for debugging purposes
-      // from("timer://foo?period=5000").setBody().constant("{ \"temperature\" : 23, \"humidity\" : 42, ").bean("weatherMicroservice", "processWeather");
+      // from("timer://foo?period=5000").setBody().constant("{ \"temperature\" : 23, \"humidity\" : 42, ").to("direct:weather");
+
+      // read weather from a topic deployed in the home
+      from("mqtt:inWeather?subscribeTopicName=ih/message/weather&userName=mqtt&password=mqtt&host=tcp://" + iotMqttHost).to("direct:weather");
+
+      from("direct:weather").bean("weatherMicroservice", "processWeather");
 
       // creates a new action
       from("direct:actions").marshal().serialization().to("mqtt:outActions?publishTopicName=ih/message/actions&userName=mqtt&password=mqtt&host=tcp://" + mqttHost);

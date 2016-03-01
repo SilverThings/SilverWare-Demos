@@ -49,14 +49,14 @@ when
    $mood: MoodAction(mood == MoodAction.Mood.EVENING) from entry-point "actions"
 then
    System.out.println("Processing mood evening");
-   commands.add(new LightCommand(LightCommand.Place.ALL, LedState.ON));
-   commands.add(new FireplaceCommand(FireplaceCommand.Fire.HEAT));
-   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.NEWS));
    commands.add(new BatchLightCommand(
       new LightCommand(LightCommand.Place.LIVINGROOM_FIREPLACE, new LedState(10, 10, 10)),
       new LightCommand(LightCommand.Place.LIVINGROOM_LIBRARY, new LedState(10, 10, 10)),
       new LightCommand(LightCommand.Place.LIVINGROOM_COUCH, new LedState(10, 10, 10))
    ));
+   commands.add(new FireplaceCommand(FireplaceCommand.Fire.HEAT));
+   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.NEWS));
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedState.ON));
 end
 
 rule "Sleep mood action"
@@ -64,16 +64,16 @@ when
    $mood: MoodAction(mood == MoodAction.Mood.SLEEP) from entry-point "actions"
 then
    System.out.println("Processing mood sleep");
-   commands.add(new LightCommand(LightCommand.Place.ALL, LedState.OFF));
-   commands.add(new FireplaceCommand(FireplaceCommand.Fire.COLD));
-   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.OFF));
-   commands.add(new DoorCommand(DoorCommand.Door.FRONT, 0)); // close
-   commands.add(new DoorCommand(DoorCommand.Door.REAR, 0)); // close
    commands.add(new BatchLightCommand(
       new LightCommand(LightCommand.Place.BATHROOM_TUB, new LedState(0, 5, 0)),
       new LightCommand(LightCommand.Place.CORRIDOR, new LedState(0, 5, 0)),
       new LightCommand(LightCommand.Place.ENTRANCE, new LedState(0, 5, 0))
    ));
+   commands.add(new FireplaceCommand(FireplaceCommand.Fire.COLD));
+   commands.add(new MediaCenterCommand(MediaCenterCommand.Media.OFF));
+   commands.add(new DoorCommand(DoorCommand.Door.FRONT, 0)); // close
+   commands.add(new DoorCommand(DoorCommand.Door.REAR, 0)); // close
+   commands.add(new LightCommand(LightCommand.Place.ALL, LedState.OFF));
 end
 
 rule "Romantic mood command"
