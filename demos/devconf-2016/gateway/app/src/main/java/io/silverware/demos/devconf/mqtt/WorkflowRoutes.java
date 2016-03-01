@@ -73,8 +73,8 @@ public class WorkflowRoutes extends RouteBuilder {
 
       // air conditioning
       from("direct:ac").choice()
-                       .when().simple("${body.ac} == '" + AirConditioningCommand.Ac.NORMAL + "'").to("direct:acOn")
-                       .otherwise().to("direct:acOff");
+                       .when().simple("${body.ac} == '" + AirConditioningCommand.Ac.NORMAL + "'").to("direct:acOff")
+                       .otherwise().to("direct:acOn");
       from("direct:acOn").setBody().constant("").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/ac/on");
       from("direct:acOff").setBody().constant("").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/ac/off");
 
