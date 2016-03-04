@@ -4,7 +4,7 @@
       <Console name="CONSOLE" target="SYSTEM_OUT">
          <PatternLayout pattern="%d %-5p {%c} %m%n"/>
       </Console>
-      <RollingFile name="ROLLING" fileName="./silverware.log" filePattern="./silverware.log.%d{yyyy-MM-dd}">
+      <RollingFile name="ROLLING" fileName="./silverware-test.log" filePattern="./silverware.log.%d{yyyy-MM-dd}">
          <PatternLayout pattern="%d %-5p [%t] {%c} %m%n"/>
          <Policies>
             <TimeBasedTriggeringPolicy />
