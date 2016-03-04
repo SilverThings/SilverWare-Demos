@@ -34,6 +34,7 @@ public class RgbLedBatchProcessor implements Processor {
    private static final Logger log = Logger.getLogger(RgbLedBatchProcessor.class);
 
    private Configuration config = Configuration.getInstance();
+   private boolean batchAppendNewLine;
 
    @Override
    public void process(final Exchange exchange) throws Exception {
@@ -42,7 +43,7 @@ public class RgbLedBatchProcessor implements Processor {
 
       final String[] batchLines = msg.getBody(String.class).split("\n");
 
-      boolean first = true;
+      batchAppendNewLine = false;
       for (String batchLine : batchLines) {
          // input message batch line "<led>;<channel(r,g,b)>;<value(0-100)>"
          //TODO: add batch line format validation
@@ -59,11 +60,6 @@ public class RgbLedBatchProcessor implements Processor {
             log.trace("Value: " + value);
          }
          // output message batch line "<i2c address>;<pwm output(0-15)>;<value(0-4095)>"
-         if (first) {
-            first = false;
-         } else {
-            pwmBatch.append("\n");
-         }
          if (led == 0xFFFF) {
             for (int i = 0; i < Configuration.RGB_LED_COUNT; i++) {
                batchAppend(pwmBatch, i, channel, value);
@@ -71,16 +67,41 @@ public class RgbLedBatchProcessor implements Processor {
          } else {
             batchAppend(pwmBatch, led, channel, value);
          }
-
       }
       msg.setBody(pwmBatch.toString());
    }
 
-   private void batchAppend(StringBuffer batch, int led, String channel, int value) {
-      batch.append(config.getRgbLedPca9685Address(led, channel)); // I2C address
+   private void batchAppend(StringBuffer pwmBatch, int led, String channel, int value) {
+      final String i2cAddress = config.getRgbLedPca9685Address(led, channel);
+      if (i2cAddress == null) {
+         if (log.isWarnEnabled()) {
+            log.warn("I2C address of PCA9685 driver for LED '" + led + "' and channel '" + channel + "' not found in configuration file (" + Configuration.CONFIG_FILE + "), skipping.");
+         }
+         return;
+      }
+      final int rgbLedPwm = config.getRgbLedPwm(led, channel);
+      if (rgbLedPwm < 0) {
+         if (log.isWarnEnabled()) {
+            log.warn("PWM output for LED '" + led + "' and channel '" + channel + "' not assigned in configuration file (" + Configuration.CONFIG_FILE + "), skipping.");
+         }
+         return;
+      }
+      final StringBuffer batch = new StringBuffer();
+      batch.append(i2cAddress); // I2C address
       batch.append(";");
-      batch.append(config.getRgbLedPwm(led, channel)); // pwm output
+      batch.append(rgbLedPwm); // pwm output
       batch.append(";");
       batch.append(Integer.valueOf((int) (40.95 * value))); // pwm value
+
+      if (log.isDebugEnabled()) {
+         log.debug("Appending to PWM batch: [" + batch.toString() + "]");
+      }
+
+      if (batchAppendNewLine) {
+         pwmBatch.append("\n");
+      } else {
+         batchAppendNewLine = true;
+      }
+      pwmBatch.append(batch);
    }
 }
