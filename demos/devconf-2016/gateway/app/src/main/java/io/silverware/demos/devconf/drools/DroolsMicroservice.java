@@ -23,6 +23,7 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kie.api.cdi.KSession;
+import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 
@@ -69,17 +70,15 @@ public class DroolsMicroservice {
       sync.acquire();
 
       try {
-         final List<Command> commands = new ArrayList<>();
          final EntryPoint entryPoint = session.getEntryPoint("actions");
          session.setGlobal("producer", producer);
-         session.setGlobal("commands", commands);
          session.setGlobal("cache", cache.getCache());
+         session.registerChannel("commands", cmd -> producer.asyncSendBody("direct:commands", cmd));
 
          actions.forEach(entryPoint::insert);
 
          session.fireAllRules();
 
-         commands.forEach(cmd -> producer.asyncSendBody("direct:commands", cmd));
       } finally {
          sync.release();
       }

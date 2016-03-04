@@ -38,18 +38,7 @@ public class IntegrationRoutes extends RouteBuilder {
       final String mqttHost = System.getProperty("mqtt.host", "10.40.3.60:1883");
       final String mobileHost = System.getProperty("mobile.host", "0.0.0.0:8283");
 
-      // expose REST API for the mobile phone to be able to send actions
-      from("jetty:http://" + mobileHost + "/mobile").setBody().simple("${in.header.button}").bean("mobileGatewayMicroservice", "mobileAction");
-
-      // periodically check Intelligent Home's REST interface to obtain weather status, process the status as an action
-      //from("timer://foo?period=5000").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/sensorData").to("direct:weather");
-      // comment out the previous route and enable the following one for debugging purposes
-      // from("timer://foo?period=5000").setBody().constant("{ \"temperature\" : 23, \"humidity\" : 42, ").to("direct:weather");
-
-      // read weather from a topic deployed in the home
-      from("mqtt:inWeather?subscribeTopicName=ih/message/weather&userName=mqtt&password=mqtt&host=tcp://" + iotMqttHost).to("direct:weather");
-
-      from("direct:weather").bean("weatherMicroservice", "processWeather");
+      // First, we need to start consumers from "direct" to avoid warnings while Camel processes exchange
 
       // creates a new action
       from("direct:actions").marshal().serialization().to("mqtt:outActions?publishTopicName=ih/message/actions&userName=mqtt&password=mqtt&host=tcp://" + mqttHost);
@@ -60,11 +49,25 @@ public class IntegrationRoutes extends RouteBuilder {
       // sends an update message to the mobile phone
       from("direct:mobile").to("mqtt:outMobile?publishTopicName=ih/message/mobile&userName=mqtt&password=mqtt&host=tcp://" + mqttHost);
 
+      // process weather
+      from("direct:weather").bean("weatherMicroservice", "processWeather");
+
+      // expose REST API for the mobile phone to be able to send actions
+      from("jetty:http://" + mobileHost + "/mobile").setBody().simple("${in.header.button}").bean("mobileGatewayMicroservice", "mobileAction");
+
+      // periodically check Intelligent Home's REST interface to obtain weather status, process the status as an action
+      //from("timer://foo?period=5000").setHeader(Exchange.HTTP_METHOD, constant("GET")).to("jetty:http://" + iotHost + "/sensorData").to("direct:weather");
+      // comment out the previous route and enable the following one for debugging purposes
+      // from("timer://foo?period=5000").setBody().constant("{ \"temperature\" : 23, \"humidity\" : 42, ").to("direct:weather");
+
       // Append the following to the previous route to get debug output
       //      .setBody().simple("Weather: ${body}").to("stream:out");
 
       // process actions in Drools
       from("mqtt:inActions?subscribeTopicName=ih/message/actions&userName=mqtt&password=mqtt&host=tcp://" + mqttHost).unmarshal().serialization().bean("droolsMicroservice", "processAction");
+
+      // read weather from a topic deployed in the home
+      from("mqtt:inWeather?subscribeTopicName=ih/message/weather&userName=mqtt&password=mqtt&host=tcp://" + iotMqttHost).to("direct:weather");
    }
 
 }
