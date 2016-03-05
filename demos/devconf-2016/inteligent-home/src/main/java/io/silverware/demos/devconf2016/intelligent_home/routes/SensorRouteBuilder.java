@@ -39,7 +39,7 @@ public class SensorRouteBuilder extends IntelligentHomeRouteBuilder {
             .process(sensorDataProcessor)
             .marshal().json(JsonLibrary.Jackson, true);
 
-      from("timer:sensorBroadcast?period=1000")
+      from("timer:sensorBroadcast?period=5000")
             .setHeader("address", simple(config.getSensorAddress()))
             .to("bulldog:i2c?readLength=2")
             .process(sensorDataProcessor)
