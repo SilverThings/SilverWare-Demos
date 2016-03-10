@@ -2,4 +2,4 @@
 
 ## Schema
 
-![DevConf Schema](https://raw.githubusercontent.com/px3/SilverWare-Demos/devel/demos/devconf-2016/devconf16-2.png)
+![DevConf Schema](https://raw.githubusercontent.com/px3/SilverWare-Demos/devel/demos/devconf-2016/devconf16.png)
