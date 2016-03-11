@@ -33,6 +33,8 @@ public class RgbLedBatchProcessor implements Processor {
 
    private static final Logger log = Logger.getLogger(RgbLedBatchProcessor.class);
 
+   public static final String SMOOTH_SET_HEADER = "smoothSet";
+
    private Configuration config = Configuration.getInstance();
    private boolean batchAppendNewLine;
 
@@ -42,6 +44,11 @@ public class RgbLedBatchProcessor implements Processor {
       final StringBuffer pwmBatch = new StringBuffer();
 
       final String[] batchLines = msg.getBody(String.class).split("\n");
+      final Object smoothChangeHeader = msg.getHeader(SMOOTH_SET_HEADER);
+      boolean smoothChange = false;
+      if (smoothChangeHeader != null) {
+         smoothChange = Boolean.valueOf((String) smoothChangeHeader);
+      }
 
       batchAppendNewLine = false;
       for (String batchLine : batchLines) {
@@ -62,16 +69,16 @@ public class RgbLedBatchProcessor implements Processor {
          // output message batch line "<i2c address>;<pwm output(0-15)>;<value(0-4095)>"
          if (led == 0xFFFF) {
             for (int i = 0; i < Configuration.RGB_LED_COUNT; i++) {
-               batchAppend(pwmBatch, i, channel, value);
+               batchAppend(pwmBatch, i, channel, value, smoothChange);
             }
          } else {
-            batchAppend(pwmBatch, led, channel, value);
+            batchAppend(pwmBatch, led, channel, value, smoothChange);
          }
       }
       msg.setBody(pwmBatch.toString());
    }
 
-   private void batchAppend(StringBuffer pwmBatch, int led, String channel, int value) {
+   private void batchAppend(StringBuffer pwmBatch, int led, String channel, int value, boolean smooth) {
       final String i2cAddress = config.getRgbLedPca9685Address(led, channel);
       if (i2cAddress == null) {
          if (log.isWarnEnabled()) {
@@ -87,11 +94,37 @@ public class RgbLedBatchProcessor implements Processor {
          return;
       }
       final StringBuffer batch = new StringBuffer();
-      batch.append(i2cAddress); // I2C address
-      batch.append(";");
-      batch.append(rgbLedPwm); // pwm output
-      batch.append(";");
-      batch.append(Integer.valueOf((int) (40.95 * value))); // pwm value
+      if (smooth) {
+         final int originalValue = config.getRgbLedValue(led, channel);
+         final int targetValue = value;
+         final int step = (targetValue - originalValue > 0) ? 1 : -1;
+         if (log.isDebugEnabled()) {
+            log.debug("Smoothing LED's (" + led + ") channel (" + channel + ") value change from " + originalValue + " to " + targetValue);
+         }
+         for (int smoothedValue = originalValue + step; smoothedValue != targetValue + step; smoothedValue += step) {
+            if (batchAppendNewLine) {
+               batch.append("\n");
+            } else {
+               batchAppendNewLine = true;
+            }
+            batch.append(i2cAddress); // I2C address
+            batch.append(";");
+            batch.append(rgbLedPwm); // pwm output
+            batch.append(";");
+            batch.append((int) (40.95 * smoothedValue)); // pwm value
+            if (log.isDebugEnabled()) {
+               log.debug("Smoothed value: " + smoothedValue);
+            }
+         }
+         batchAppendNewLine = false;
+         config.setRgbLedValue(led, channel, value);
+      } else {
+         batch.append(i2cAddress); // I2C address
+         batch.append(";");
+         batch.append(rgbLedPwm); // pwm output
+         batch.append(";");
+         batch.append((int) (40.95 * value)); // pwm value
+      }
 
       if (log.isDebugEnabled()) {
          log.debug("Appending to PWM batch: [" + batch.toString() + "]");

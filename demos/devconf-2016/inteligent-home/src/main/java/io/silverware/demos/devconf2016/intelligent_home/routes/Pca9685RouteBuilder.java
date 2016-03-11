@@ -19,6 +19,7 @@
  */
 package io.silverware.demos.devconf2016.intelligent_home.routes;
 
+import io.silverware.demos.devconf2016.intelligent_home.processors.ConfigResetProcessor;
 import io.silverware.demos.devconf2016.intelligent_home.processors.Pca9685PwmSetBatchProcessor;
 import io.silverware.demos.devconf2016.intelligent_home.processors.Pca9685PwmSetProcessor;
 
@@ -33,6 +34,7 @@ public class Pca9685RouteBuilder extends IntelligentHomeRouteBuilder {
    public void configure() throws Exception {
       final Pca9685PwmSetProcessor pca9685PwmSetProcessor = new Pca9685PwmSetProcessor();
       final Pca9685PwmSetBatchProcessor pca9685PwmSetBatchProcessor = new Pca9685PwmSetBatchProcessor();
+      final ConfigResetProcessor configResetProcessor = new ConfigResetProcessor();
 
       // direct routes
       from("direct:pca9685-reset")
@@ -42,7 +44,8 @@ public class Pca9685RouteBuilder extends IntelligentHomeRouteBuilder {
             .setBody(simple("FE3D")).to("bulldog:i2c") //sets PWM frequency to 100 Hz
             .setBody(simple("00A1")).to("bulldog:i2c")
             .setBody(simple("0104")).to("bulldog:i2c")
-            .setBody(simple("FC0010")).to("bulldog:i2c");
+            .setBody(simple("FC0010")).to("bulldog:i2c")
+            .process(configResetProcessor);
 
       from("direct:pca9685-pwm-set")
             .process(pca9685PwmSetProcessor)

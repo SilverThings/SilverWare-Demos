@@ -6,6 +6,7 @@ package io.silverware.demos.devconf2016.intelligent_home.model;
 public class Channel {
    private int pca9685Id = -1;
    private int pwm = -1;
+   private int value = -1;
 
    public int getPca9685Id() {
       return pca9685Id;
@@ -25,6 +26,15 @@ public class Channel {
       return this;
    }
 
+   public int getValue() {
+      return value;
+   }
+
+   public Channel setValue(final int value) {
+      this.value = value;
+      return this;
+   }
+
    @Override
    public boolean equals(final Object o) {
       if (this == o) {
@@ -39,7 +49,10 @@ public class Channel {
       if (getPca9685Id() != channel.getPca9685Id()) {
          return false;
       }
-      return getPwm() == channel.getPwm();
+      if (getPwm() != channel.getPwm()) {
+         return false;
+      }
+      return getValue() == channel.getValue();
 
    }
 
@@ -47,6 +60,7 @@ public class Channel {
    public int hashCode() {
       int result = getPca9685Id();
       result = 31 * result + getPwm();
+      result = 31 * result + getValue();
       return result;
    }
 }

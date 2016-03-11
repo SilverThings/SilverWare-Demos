@@ -29,17 +29,16 @@ public final class Configuration {
    private final Channel[] servos = new Channel[SERVO_COUNT];
 
    private final Properties homeConfig = new Properties();
+   public final String[] channelNames = new String[] { "r", "g", "b" };
 
    private Configuration() {
       try {
          homeConfig.load(RgbLedProcessor.class.getResourceAsStream(CONFIG_FILE));
-         final String[] channelNames = new String[] { "r", "g", "b" };
 
          // for all leds in config
          for (int led = 0; led < RGB_LED_COUNT; led++) {
 
-            for (int ch = 0; ch < 3; ch++) {
-               final String channel = channelNames[ch];
+            for (String channel : channelNames) {
                final String rgbLedProp = homeConfig.getProperty(LED_PREFIX + "." + led + "." + channel);
 
                if (rgbLedProp != null) {
@@ -55,7 +54,9 @@ public final class Configuration {
                         rgbLeds[led] = new RgbLed();
                      }
                      if (!rgbLeds[led].getChannelMap().containsKey(channel)) {
-                        rgbLeds[led].getChannelMap().put(channel, new Channel());
+                        final Channel newChannel = new Channel();
+                        newChannel.setValue(0);
+                        rgbLeds[led].getChannelMap().put(channel, newChannel);
                      }
                      rgbLeds[led].getChannelMap().get(channel).setPca9685Id(pca9685Id).setPwm(Integer.valueOf(ledCoordinates[1]));
                   }
@@ -114,6 +115,34 @@ public final class Configuration {
       }
    }
 
+   public int getRgbLedValue(int led, String channel) {
+      final RgbLed rgbLed = getRgbLed(led);
+      if (rgbLed == null) {
+         return -1;
+      } else {
+         Channel ch = rgbLed.getChannelMap().get(channel);
+         if (ch == null) {
+            return -1;
+         } else {
+            return ch.getValue();
+         }
+      }
+   }
+
+   public void setRgbLedValue(int led, String channel, int value) {
+      final RgbLed rgbLed = getRgbLed(led);
+      if (rgbLed == null) {
+         return;
+      } else {
+         Channel ch = rgbLed.getChannelMap().get(channel);
+         if (ch == null) {
+            return;
+         } else {
+            ch.setValue(value);
+         }
+      }
+   }
+
    public RgbLed getRgbLed(int led) {
       return rgbLeds[led];
    }
@@ -131,6 +160,14 @@ public final class Configuration {
          return -1;
       } else {
          return servos[servo].getPwm();
+      }
+   }
+
+   public void resetRgbLeds() {
+      for (RgbLed led : rgbLeds) {
+         for (String channel : channelNames) {
+            led.getChannelMap().get(channel).setValue(0);
+         }
       }
    }
 

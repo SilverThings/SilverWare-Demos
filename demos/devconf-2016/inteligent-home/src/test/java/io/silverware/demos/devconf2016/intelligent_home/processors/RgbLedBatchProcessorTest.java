@@ -2,6 +2,7 @@ package io.silverware.demos.devconf2016.intelligent_home.processors;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.DefaultExchange;
 import org.testng.Assert;
@@ -131,5 +132,39 @@ public class RgbLedBatchProcessorTest {
             + "0x00;6;2047\n"
             + "0x00;9;2047\n"
             + "0x00;12;2047");
+   }
+
+   @Test
+   public void testRgbLedBatchSmoothed() throws Exception {
+      Exchange ex = new DefaultExchange(ctx);
+      Message msg = ex.getIn();
+      msg.setBody("0;g;10");
+      msg.setHeader(RgbLedBatchProcessor.SMOOTH_SET_HEADER, "true");
+
+      processor.process(ex);
+      System.out.println(ex.getIn());
+   }
+
+   @Test
+   public void testRgbLedLongerBatchSmoothed() throws Exception {
+      Exchange ex = new DefaultExchange(ctx);
+      Message msg = ex.getIn();
+      msg.setBody("0;g;10\n0;r;10\n0;g;5;\n0;g;15");
+      msg.setHeader(RgbLedBatchProcessor.SMOOTH_SET_HEADER, "true");
+
+      processor.process(ex);
+      System.out.println(ex.getIn());
+   }
+
+   @Test
+   public void testAllLedsSmoothed() throws Exception {
+      Exchange ex = new DefaultExchange(ctx);
+      Message msg = ex.getIn();
+
+      msg.setBody("65535;r;10");
+      msg.setHeader(RgbLedBatchProcessor.SMOOTH_SET_HEADER, "true");
+
+      processor.process(ex);
+      System.out.println(ex.getIn());
    }
 }
