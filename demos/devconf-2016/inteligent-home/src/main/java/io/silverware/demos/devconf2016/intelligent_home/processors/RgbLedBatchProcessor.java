@@ -94,9 +94,10 @@ public class RgbLedBatchProcessor implements Processor {
          return;
       }
       final StringBuffer batch = new StringBuffer();
-      if (smooth) {
-         final int originalValue = config.getRgbLedValue(led, channel);
-         final int targetValue = value;
+      final int originalValue = config.getRgbLedValue(led, channel);
+      final int targetValue = value;
+
+      if (smooth && originalValue != targetValue) {
          final int step = (targetValue - originalValue > 0) ? 1 : -1;
          if (log.isDebugEnabled()) {
             log.debug("Smoothing LED's (" + led + ") channel (" + channel + ") value change from " + originalValue + " to " + targetValue);

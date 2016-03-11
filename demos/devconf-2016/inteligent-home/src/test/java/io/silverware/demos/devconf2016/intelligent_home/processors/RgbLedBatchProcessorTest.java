@@ -137,6 +137,28 @@ public class RgbLedBatchProcessorTest {
    }
 
    @Test
+   public void testRgbLedBatchSmoothedWithDuplicate() throws Exception {
+      final Exchange ex = new DefaultExchange(ctx);
+      final Message msg = ex.getIn();
+      config.resetRgbLeds();
+
+      msg.setBody("0;g;10\n0;g;10");
+      msg.setHeader(RgbLedBatchProcessor.SMOOTH_SET_HEADER, "true");
+      processor.process(ex);
+      Assert.assertEquals(msg.getBody(), "0x00;1;40\n" // G 0 -> 10
+            + "0x00;1;81\n"
+            + "0x00;1;122\n"
+            + "0x00;1;163\n"
+            + "0x00;1;204\n"
+            + "0x00;1;245\n"
+            + "0x00;1;286\n"
+            + "0x00;1;327\n"
+            + "0x00;1;368\n"
+            + "0x00;1;409\n"
+            + "0x00;1;409"); // G 10 -> 10
+   }
+
+   @Test
    public void testRgbLedBatchWithAllLedsAtTheEnd() throws Exception {
       final Exchange ex = new DefaultExchange(ctx);
       final Message msg = ex.getIn();
