@@ -164,9 +164,15 @@ public final class Configuration {
    }
 
    public void resetRgbLeds() {
+      Channel channel = null;
       for (RgbLed led : rgbLeds) {
-         for (String channel : channelNames) {
-            led.getChannelMap().get(channel).setValue(0);
+         for (String channelName : channelNames) {
+            if (led != null) {
+               channel = led.getChannelMap().get(channelName);
+               if (channel != null) {
+                  channel.setValue(0);
+               }
+            }
          }
       }
    }
