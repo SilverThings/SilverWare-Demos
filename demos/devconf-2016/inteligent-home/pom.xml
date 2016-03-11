@@ -9,7 +9,7 @@
    <artifactId>devconf-2016-inteligent-home</artifactId>
    <packaging>jar</packaging>
    <properties>
-      <version.silverspoon>0.2.1-SNAPSHOT</version.silverspoon>
+      <version.silverspoon>0.3.0-SNAPSHOT</version.silverspoon>
    </properties>
    <dependencies>
       <dependency>

@@ -33,7 +33,8 @@ public class RgbLedBatchProcessor implements Processor {
 
    private static final Logger log = Logger.getLogger(RgbLedBatchProcessor.class);
 
-   public static final String SMOOTH_SET_HEADER = "smoothSet";
+   public static final String SMOOTH_SET_HEADER = "smooth";
+   public static final String BATCH_DELAY_HEADER = "delay";
 
    private Configuration config = Configuration.getInstance();
    private boolean batchAppendNewLine;
@@ -76,6 +77,15 @@ public class RgbLedBatchProcessor implements Processor {
          }
       }
       msg.setBody(pwmBatch.toString());
+
+      final Object delayHeader = msg.getHeader(BATCH_DELAY_HEADER);
+      long delay = 0;
+      if (delayHeader != null) {
+         delay = Long.valueOf((String) delayHeader);
+         if(delay > 0){
+            msg.setHeader("batchDelay", delay);
+         }
+      }
    }
 
    private void batchAppend(StringBuffer pwmBatch, int led, String channel, int value, boolean smooth) {
