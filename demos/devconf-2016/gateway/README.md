@@ -28,3 +28,17 @@ Compile with:
 Run the jar file in app/target. Use the following parameters to fix logging of some components and provide system properties:
 
 `java -Diot.host=10.40.1.23:8282 -Diot.mqtt.host=10.40.1.23:1883 -Dmqtt.host=127.0.0.1:1883 -Dmobile.host=0.0.0.0:8283 -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -jar app/target/gateway-app-2.0-SNAPSHOT.jar`
+
+Overview of the demo
+====
+
+This demo covers everything that runs on OpenShift v3 in the following figure.
+
+![Demo overview](https://raw.githubusercontent.com/px3/SilverWare-Demos/devel/demos/devconf-2016/gateway/ih-overview.png)
+
+Details of service integration
+====
+
+All the components of the gateway are connected as shown in the following figure.
+
+![Demo details](https://raw.githubusercontent.com/px3/SilverWare-Demos/devel/demos/devconf-2016/gateway/ih-detail.png)
