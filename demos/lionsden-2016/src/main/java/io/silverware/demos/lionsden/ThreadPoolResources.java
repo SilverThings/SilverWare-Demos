@@ -19,22 +19,23 @@
  */
 package io.silverware.demos.lionsden;
 
-import javax.inject.Inject;
-
 import io.silverware.microservices.annotations.Microservice;
-import io.silverware.microservices.annotations.MicroserviceReference;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
 @Microservice
-public class ServiceB {
+public class ThreadPoolResources {
 
-   @Inject
-   @MicroserviceReference
-   private ServiceC upper;
-
-   public String enrich(final String name) {
-      return "Mr. " + upper.upperCase(name);
+   @Produces
+   @Named("myCoolPool")
+   public ThreadPoolExecutor getPool() {
+      return (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
    }
+
 }

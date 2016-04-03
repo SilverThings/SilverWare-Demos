@@ -19,22 +19,10 @@
  */
 package io.silverware.demos.lionsden;
 
-import javax.inject.Inject;
-
-import io.silverware.microservices.annotations.Microservice;
-import io.silverware.microservices.annotations.MicroserviceReference;
-
 /**
- * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
+ * @author Martin Večeřa <marvenec@gmail.com>
  */
-@Microservice
-public class ServiceB {
+public interface ServiceC {
 
-   @Inject
-   @MicroserviceReference
-   private ServiceC upper;
-
-   public String enrich(final String name) {
-      return "Mr. " + upper.upperCase(name);
-   }
+   String upperCase(final String name);
 }

@@ -19,22 +19,52 @@
  */
 package io.silverware.demos.lionsden;
 
-import javax.inject.Inject;
-
+import io.silverware.microservices.annotations.Gateway;
+import io.silverware.microservices.annotations.InvocationPolicy;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
+import io.silverware.microservices.annotations.ParamName;
+import io.silverware.microservices.silver.services.lookup.LocalLookupStrategy;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
 @Microservice
+@Gateway
 public class ServiceA {
 
    @Inject
    @MicroserviceReference
    private ServiceB serviceB;
 
-   public String hello(final String name) {
+   @Inject
+   @MicroserviceReference
+   @InvocationPolicy(lookupStrategy = LocalLookupStrategy.class)
+   private ServiceC serviceC;
+
+   @Inject
+   @Named("myCoolPool")
+   private ThreadPoolExecutor pool;
+
+   @Inject
+   @MicroserviceReference
+   private ServiceG serviceG;
+
+   public String hello(@ParamName("name") final String name) {
       return "Hello " + serviceB.enrich(name);
+   }
+
+   public String helloAsync(@ParamName("name") final String name) throws ExecutionException, InterruptedException {
+      return CompletableFuture.supplyAsync(() -> serviceC.upperCase(name), pool).thenApply(s -> serviceB.enrich(s)).thenApply(s -> "Hello " + s).get();
+   }
+
+   public String hey() {
+      return "Hey " + serviceG.duke();
    }
 }
