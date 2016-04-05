@@ -181,6 +181,10 @@ public final class Configuration {
       return homeConfig.getProperty("dht11.address");
    }
 
+   public String getRfidAddress() {
+      return homeConfig.getProperty("rfid.address");
+   }
+
    public String getFanGpioPin() {
       return homeConfig.getProperty("fan.gpio");
    }
