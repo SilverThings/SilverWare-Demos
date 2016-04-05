@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 
+import io.silverware.demos.devconf.kjar.RfidAction;
 import io.silverware.demos.devconf.kjar.WeatherAction;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
@@ -57,6 +58,12 @@ public class WeatherMicroservice {
       int humidity = Integer.parseInt(humidityStr);
 
       producer.sendBody("direct:actions", new WeatherAction(temp, humidity));
+   }
+
+   public void processRfid(final String tag) {
+      log.info("RFID tag present {}", tag);
+
+      producer.sendBody("direct:actions", new RfidAction(tag.substring(1, tag.length() - 1)));
    }
 
 }

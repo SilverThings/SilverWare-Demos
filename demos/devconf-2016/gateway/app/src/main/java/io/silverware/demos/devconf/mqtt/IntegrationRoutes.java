@@ -52,6 +52,9 @@ public class IntegrationRoutes extends RouteBuilder {
       // process weather
       from("direct:weather").bean("weatherMicroservice", "processWeather");
 
+      // process rfid
+      from("direct:rfid").bean("weatherMicroservice", "processRfid");
+
       // expose REST API for the mobile phone to be able to send actions
       from("jetty:http://" + mobileHost + "/mobile").setBody().simple("${in.header.button}").bean("mobileGatewayMicroservice", "mobileAction");
 
@@ -68,6 +71,9 @@ public class IntegrationRoutes extends RouteBuilder {
 
       // read weather from a topic deployed in the home
       from("mqtt:inWeather?subscribeTopicName=ih/message/weather&userName=mqtt&password=mqtt&host=tcp://" + iotMqttHost).to("direct:weather");
+
+      // read RFID tags from a topic deployed in the home
+      from("mqtt:inRfid?subscribeTopicName=ih/message/rfidTags&userName=mqtt&password=mqtt&host=tcp://" + iotMqttHost).to("direct:rfid");
    }
 
 }

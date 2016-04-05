@@ -230,3 +230,52 @@ then
    channels["commands"].send(new DoorCommand(DoorCommand.Door.FRONT, 0));
    channels["commands"].send(new DoorCommand(DoorCommand.Door.REAR, 0));
 end
+
+rule "Red RFID"
+when
+   $rfid: RfidAction(rfid == "D82A6900") from entry-point "actions"
+then
+   System.out.println("RED mode");
+   channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(100, 0, 0)));
+end
+
+rule "Green RFID"
+when
+   $rfid: RfidAction(rfid == "C0686400") from entry-point "actions"
+then
+   System.out.println("GREEN mode");
+   channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 100, 0)));
+end
+
+rule "Blue RFID"
+when
+   $rfid: RfidAction(rfid == "84B4FEE9") from entry-point "actions"
+then
+   System.out.println("BLUE mode");
+   channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 0, 100)));
+end
+
+rule "Yellow RFID"
+when
+   $rfid: RfidAction(rfid == "A4348306") from entry-point "actions"
+then
+   System.out.println("YELLOW mode");
+   channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(100, 100, 0)));
+end
+
+rule "White RFID"
+when
+   $rfid: RfidAction(rfid == "B37D8EF6") from entry-point "actions"
+then
+   System.out.println("WHITE mode");
+   channels["commands"].send(new LightCommand(LightCommand.Place.ALL, LedState.ON));
+end
+
+rule "Dark Blue RFID"
+when
+   $rfid: RfidAction(rfid == "38CF0400") from entry-point "actions"
+then
+   System.out.println("Dark Blue mode");
+   entryPoints["actions"].insert(new MoodAction(MoodAction.Mood.ROMANTIC));
+end
+
