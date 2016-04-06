@@ -19,18 +19,19 @@
  */
 package io.silverware.demos.lionsden;
 
+import io.silverware.microservices.SilverWareException;
 import io.silverware.microservices.annotations.Gateway;
-import io.silverware.microservices.annotations.InvocationPolicy;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
 import io.silverware.microservices.annotations.ParamName;
-import io.silverware.microservices.silver.services.lookup.LocalLookupStrategy;
+import io.silverware.microservices.providers.rest.annotation.JsonService;
+import io.silverware.microservices.providers.rest.api.RestService;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
@@ -41,11 +42,12 @@ public class ServiceA {
 
    @Inject
    @MicroserviceReference
-   private ServiceB serviceB;
+   @JsonService(endpoint = "http://localhost:8082/rest/ServiceB")
+   private RestService serviceB;
 
    @Inject
    @MicroserviceReference
-   @InvocationPolicy(lookupStrategy = LocalLookupStrategy.class)
+   @JsonService(endpoint = "http://localhost:8083/rest/ServiceCImpl")
    private ServiceC serviceC;
 
    @Inject
@@ -54,14 +56,22 @@ public class ServiceA {
 
    @Inject
    @MicroserviceReference
+   @JsonService(endpoint = "http://localhost:8084/rest/ServiceG")
    private ServiceG serviceG;
 
-   public String hello(@ParamName("name") final String name) {
-      return "Hello " + serviceB.enrich(name);
+   public String hello(@ParamName("name") final String name) throws SilverWareException {
+      return "Hello " + serviceB.call("enrich", "name", name);
    }
 
-   public String helloAsync(@ParamName("name") final String name) throws ExecutionException, InterruptedException {
-      return CompletableFuture.supplyAsync(() -> serviceC.upperCase(name), pool).thenApply(s -> serviceB.enrich(s)).thenApply(s -> "Hello " + s).get();
+   public String helloAsync(@ParamName("name") final String name) throws ExecutionException, InterruptedException, SilverWareException {
+      return CompletableFuture.supplyAsync(() -> serviceC.upperCase(name), pool).thenApply(s -> {
+         try {
+            return serviceB.call("enrich", "name", s);
+         } catch (SilverWareException e) {
+            e.printStackTrace();
+         }
+         return "Monsieur Dupont";
+      }).thenApply(s -> "Hello " + s).get();
    }
 
    public String hey() {

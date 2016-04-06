@@ -21,20 +21,25 @@ package io.silverware.demos.lionsden;
 
 import javax.inject.Inject;
 
+import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
+import io.silverware.microservices.annotations.ParamName;
+import io.silverware.microservices.providers.rest.annotation.JsonService;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
 @Microservice
+@Gateway
 public class ServiceB {
 
    @Inject
    @MicroserviceReference
+   @JsonService(endpoint = "http://localhost:8083/rest/ServiceCImpl")
    private ServiceC upper;
 
-   public String enrich(final String name) {
+   public String enrich(@ParamName("name") final String name) {
       return "Mr. " + upper.upperCase(name);
    }
 }
