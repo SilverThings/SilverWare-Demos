@@ -1,11 +1,13 @@
 package io.silverware.demos.devconf.kjar
 
 import java.lang.String;
+import java.util.Map;
 import io.silverware.demos.devconf.kjar.*;
 
 import org.apache.camel.ProducerTemplate;
 
 global org.apache.camel.ProducerTemplate producer;
+global java.util.Map cache;
 
 declare MoodAction
   @expires( 2m )
@@ -253,9 +255,10 @@ when
       RfidAction() from window GreenRfids,
       count(1)
    )
-   not CacheStatus( key == "io.silverware.demos.devconf.kjar.LightCommand.ALL.G", value == "50")
+   eval( !("50".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G"))) )
 then
    System.out.println("GREEN mode");
+   System.out.println(cache);
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 100, 0)));
 end
 
@@ -281,24 +284,20 @@ end
 rule "Yellow RFID"
 when
    $rfid: RfidAction(rfid == "A4348306") from entry-point "actions"
-   not (
-     CacheStatus( key == "io.silverware.demos.devconf.kjar.LightCommand.ALL.R", value == "100") and
-     CacheStatus( key == "io.silverware.demos.devconf.kjar.LightCommand.ALL.G", value == "100") and
-     CacheStatus( key == "io.silverware.demos.devconf.kjar.LightCommand.ALL.B", value == "0")
-   )
+   eval( !("100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.R"))) || !("100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G"))) || !("0".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.B"))) )
 then
    System.out.println("YELLOW mode");
+   System.out.println(cache);
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(100, 100, 0)));
 end
 
 rule "Yellow Off"
 when
    $rfid: RfidAction(rfid == "A4348306") from entry-point "actions"
-   CacheStatus( key == "io.silverware.demos.devconf.kjar.LightCommand.ALL.R", value == "100")
-   CacheStatus( key == "io.silverware.demos.devconf.kjar.LightCommand.ALL.G", value == "100")
-   CacheStatus( key == "io.silverware.demos.devconf.kjar.LightCommand.ALL.B", value == "0")
+   eval( "100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.R")) && "100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G")) && "0".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.B")) )
 then
    System.out.println("YELLOW OFF");
+   System.out.println(cache);
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 0, 0)));
 end
 
@@ -307,6 +306,7 @@ when
    $rfid: RfidAction(rfid == "B37D8EF6") from entry-point "actions"
 then
    System.out.println("WHITE mode");
+   System.out.println(cache);
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, LedState.ON));
 end
 
