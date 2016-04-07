@@ -258,6 +258,7 @@ when
    eval( !("50".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.LightCommand.G"))) )
 then
    System.out.println("GREEN mode");
+   System.out.println(cache);
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 100, 0)));
 end
 
@@ -286,6 +287,7 @@ when
    eval( !("100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.LightCommand.R"))) || !("100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G"))) || !("0".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.B"))) )
 then
    System.out.println("YELLOW mode");
+   System.out.println(cache);
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(100, 100, 0)));
 end
 
@@ -295,6 +297,7 @@ when
    eval( "100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.R")) && "100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G")) && "0".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.B")) )
 then
    System.out.println("YELLOW OFF");
+   System.out.println(cache);
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 0, 0)));
 end
 
