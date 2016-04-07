@@ -282,7 +282,7 @@ end
 rule "Yellow Off"
 when
    $rfid: RfidAction(rfid == "A4348306") from entry-point "actions"
-   eval( "100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.R")) && "100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.G")) && "100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.B")) )
+   eval( "100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.R")) && "100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.G")) && "0".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.B")) )
 then
    System.out.println("YELLOW OFF");
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 0, 0)));
