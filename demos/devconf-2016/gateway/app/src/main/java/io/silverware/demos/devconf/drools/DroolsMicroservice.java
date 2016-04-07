@@ -34,6 +34,7 @@ import java.util.concurrent.Semaphore;
 import javax.inject.Inject;
 
 import io.silverware.demos.devconf.kjar.Action;
+import io.silverware.demos.devconf.kjar.CacheStatus;
 import io.silverware.demos.devconf.kjar.Command;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
@@ -72,8 +73,8 @@ public class DroolsMicroservice {
       try {
          final EntryPoint entryPoint = session.getEntryPoint("actions");
          session.setGlobal("producer", producer);
-         session.setGlobal("cache", cache.getCache());
          session.registerChannel("commands", cmd -> producer.asyncSendBody("direct:commands", cmd));
+         cache.getCache().forEach((k, v) -> session.insert(new CacheStatus(k, v)));
 
          actions.forEach(entryPoint::insert);
 
