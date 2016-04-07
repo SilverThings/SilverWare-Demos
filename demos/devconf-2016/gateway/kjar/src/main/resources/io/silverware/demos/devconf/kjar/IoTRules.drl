@@ -29,6 +29,10 @@ declare RfidAction
   @role( event )
 end
 
+declare window GreenRfids
+  RfidAction(rfid == "C0686400") over window:time (30s) from entry-point "actions"
+end
+
 rule "Weather action"
 when
    $weather: WeatherAction() from entry-point "actions"
@@ -245,11 +249,13 @@ then
 end
 
 rule "Green RFID"
+salience -100
 when
    Number( intValue == 1 ) from accumulate (
-      RfidAction(rfid == "C0686400") over window:time (30s) from entry-point "actions",
+      RfidAction() from window GreenRfids,
       count(1)
    )
+   eval( !("50".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.LightCommand.G"))) )
 then
    System.out.println("GREEN mode");
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 100, 0)));
@@ -258,7 +264,7 @@ end
 rule "Green Again"
 when
    Number( intValue >= 2 ) from accumulate (
-      RfidAction(rfid == "C0686400") over window:time (30s) from entry-point "actions",
+      RfidAction() from window GreenRfids,
       count(1)
    )
 then
@@ -277,7 +283,7 @@ end
 rule "Yellow RFID"
 when
    $rfid: RfidAction(rfid == "A4348306") from entry-point "actions"
-   eval( !("100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.R"))) || !("100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.G"))) || !("0".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.B"))) )
+   eval( !("100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.LightCommand.R"))) || !("100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G"))) || !("0".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.B"))) )
 then
    System.out.println("YELLOW mode");
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(100, 100, 0)));
@@ -286,7 +292,7 @@ end
 rule "Yellow Off"
 when
    $rfid: RfidAction(rfid == "A4348306") from entry-point "actions"
-   eval( "100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.R")) && "100".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.G")) && "0".equals(cache.get("io.silverware.demos.devconf.kjar.ALL.B")) )
+   eval( "100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.R")) && "100".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G")) && "0".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.B")) )
 then
    System.out.println("YELLOW OFF");
    channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 0, 0)));
