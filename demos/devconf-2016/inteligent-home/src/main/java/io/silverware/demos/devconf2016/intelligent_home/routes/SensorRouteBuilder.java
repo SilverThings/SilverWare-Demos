@@ -44,6 +44,6 @@ public class SensorRouteBuilder extends IntelligentHomeRouteBuilder {
             .to("bulldog:i2c?readLength=2")
             .process(sensorDataProcessor)
             .marshal().json(JsonLibrary.Jackson, true)
-            .to("mqtt:status?publishTopicName=ih/messages/weather&userName=mqtt&password=mqtt&host=tcp://" + mqttHost() + "/");
+            .to("mqtt:status?publishTopicName=ih/message/weather&userName=mqtt&password=mqtt&host=tcp://" + mqttHost() + "/");
    }
 }
