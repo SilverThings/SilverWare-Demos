@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import io.silverware.demos.devconf2016.intelligent_home.Configuration;
 
 /**
- * Created by pmacik on 4.3.16.
+ * @author <a href="mailto:pavel.macik@gmail.com">Pavel Macík</a>
  */
 public class RgbLedBatchProcessorTest {
    private RgbLedBatchProcessor processor = new RgbLedBatchProcessor();

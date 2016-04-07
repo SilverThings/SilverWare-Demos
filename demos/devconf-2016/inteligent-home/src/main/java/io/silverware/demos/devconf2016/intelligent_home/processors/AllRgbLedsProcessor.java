@@ -44,16 +44,23 @@ public class AllRgbLedsProcessor implements Processor {
       boolean first = true;
       for (int led = 0; led < Configuration.RGB_LED_COUNT; led++) {
          if (config.getRgbLed(led) != null) {
-            for (String channel : channels) {
+            for (final String channel : channels) {
                if (config.getRgbLedPwm(led, channel) >= 0) {
+                  final String value = (String) in.getHeader(channel);
+                  if (value == null) {
+                     if (log.isDebugEnabled()) {
+                        log.debug("Header " + channel + " not set, skipping the given channel for led #" + led);
+                     }
+                     continue;
+                  } else {
+                     if (log.isTraceEnabled()) {
+                        log.trace("Adding to batch for all LEDs: led=" + led + ", channel=" + channel + ", value=" + value);
+                     }
+                  }
                   if (first) {
                      first = false;
                   } else {
                      allRgbLeds.append("\n");
-                  }
-                  String value = (String) in.getHeader(channel);
-                  if (log.isTraceEnabled()) {
-                     log.trace("Adding to batch for all LEDs: led=" + led + ", channel=" + channel + ", value=" + value);
                   }
                   allRgbLeds.append(led);
                   allRgbLeds.append(";");
