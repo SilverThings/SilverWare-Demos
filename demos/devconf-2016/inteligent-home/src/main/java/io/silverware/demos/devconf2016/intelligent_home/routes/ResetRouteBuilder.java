@@ -26,11 +26,17 @@ public class ResetRouteBuilder extends IntelligentHomeRouteBuilder {
 
    @Override
    public void configure() throws Exception {
-      from(restBaseUri() + "/reset?httpMethodRestrict=GET")
+      from("direct:reset")
             .setHeader("address", simple("0x70"))
             .to("direct:pca9685-reset")
             .to("direct:fireplace-off")
             .to("direct:ac-off")
             .to("direct:tv-reset");
+
+      from("timer://initial-reset?repeatCount=1&delay=5000")
+            .to("direct:reset");
+
+      from(restBaseUri() + "/reset?httpMethodRestrict=GET")
+            .to("direct:reset");
    }
 }
