@@ -252,8 +252,8 @@ rule "Green RFID"
 salience -100
 when
    Number( intValue == 1 ) from accumulate (
-      RfidAction() from window GreenRfids,
-      count(1)
+      $rfid: RfidAction() from window GreenRfids,
+      count($rfid)
    )
    eval( !("50".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G"))) )
 then
@@ -265,8 +265,8 @@ end
 rule "Green Again"
 when
    Number( intValue >= 2 ) from accumulate (
-      RfidAction() from window GreenRfids,
-      count(1)
+      $rfid: RfidAction() from window GreenRfids,
+      count($rfid)
    )
 then
    System.out.println("GREEN Again");
