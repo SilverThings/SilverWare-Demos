@@ -55,6 +55,7 @@
       <version.apache.camel>2.16.1</version.apache.camel>
       <version.maven.clean>2.5</version.maven.clean>
       <version.maven.compiler>3.2</version.maven.compiler>
+      <version.maven.exec>1.4.0</version.maven.exec>
       <version.maven.surefire>2.18.1</version.maven.surefire>
       <version.maven.findbugs>3.0.0</version.maven.findbugs>
       <version.maven.project.reports>2.7</version.maven.project.reports>
@@ -104,21 +105,6 @@
                <configuration>
                   <source>${java.level}</source>
                   <target>${java.level}</target>
-               </configuration>
-            </plugin>
-            <plugin>
-               <groupId>org.codehaus.mojo</groupId>
-               <artifactId>exec-maven-plugin</artifactId>
-               <version>1.4.0</version>
-               <executions>
-                  <execution>
-                     <goals>
-                        <goal>java</goal>
-                     </goals>
-                  </execution>
-               </executions>
-               <configuration>
-                  <mainClass>io.silverware.microservices.Boot</mainClass>
                </configuration>
             </plugin>
             <plugin>
@@ -189,6 +175,7 @@
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>exec-maven-plugin</artifactId>
+               <version>${version.maven.exec}</version>
                <executions>
                   <execution>
                      <goals>

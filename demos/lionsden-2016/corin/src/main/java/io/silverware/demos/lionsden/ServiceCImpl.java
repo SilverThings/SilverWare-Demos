@@ -19,12 +19,14 @@
  */
 package io.silverware.demos.lionsden;
 
+import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
 
 /**
  * @author Martin Večeřa <marvenec@gmail.com>
  */
 @Microservice
+@Gateway
 public class ServiceCImpl implements ServiceC {
 
    public String upperCase(final String name) {
