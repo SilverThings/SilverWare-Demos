@@ -21,6 +21,7 @@ package io.silverware.demos.lionsden;
 
 import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
+import io.silverware.microservices.annotations.ParamName;
 
 /**
  * @author Martin Večeřa <marvenec@gmail.com>
@@ -29,7 +30,7 @@ import io.silverware.microservices.annotations.Microservice;
 @Gateway
 public class ServiceCImpl implements ServiceC {
 
-   public String upperCase(final String name) {
+   public String upperCase(@ParamName("arg0") final String name) {
       return name.toUpperCase();
    }
 }
