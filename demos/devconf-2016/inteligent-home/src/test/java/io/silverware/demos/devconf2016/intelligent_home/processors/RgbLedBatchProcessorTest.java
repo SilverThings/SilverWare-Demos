@@ -30,7 +30,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;3;2047\n"
             + "0x00;6;2047\n"
             + "0x00;9;2047\n"
-            + "0x00;12;2047");
+            + "0x00;12;2047\n");
    }
 
    @Test
@@ -41,15 +41,15 @@ public class RgbLedBatchProcessorTest {
 
       msg.setBody("0;r;0");
       processor.process(ex);
-      Assert.assertEquals(msg.getBody(), "0x00;0;0");
+      Assert.assertEquals(msg.getBody(), "0x00;0;0\n");
 
       msg.setBody("0;r;50");
       processor.process(ex);
-      Assert.assertEquals(msg.getBody(), "0x00;0;2047");
+      Assert.assertEquals(msg.getBody(), "0x00;0;2047\n");
 
       msg.setBody("0;r;100");
       processor.process(ex);
-      Assert.assertEquals(msg.getBody(), "0x00;0;4095");
+      Assert.assertEquals(msg.getBody(), "0x00;0;4095\n");
    }
 
    @Test
@@ -62,7 +62,7 @@ public class RgbLedBatchProcessorTest {
       processor.process(ex);
       Assert.assertEquals(msg.getBody(), "0x00;0;0\n"
             + "0x00;1;2047\n"
-            + "0x00;2;4095");
+            + "0x00;2;4095\n");
    }
 
    @Test
@@ -74,7 +74,7 @@ public class RgbLedBatchProcessorTest {
       msg.setBody("5;r;0\n0;g;50\n0;b;100");
       processor.process(ex);
       Assert.assertEquals(msg.getBody(), "0x00;1;2047\n"
-            + "0x00;2;4095");
+            + "0x00;2;4095\n");
    }
 
    @Test
@@ -99,7 +99,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;5;4095\n"
             + "0x00;8;4095\n"
             + "0x00;11;4095\n"
-            + "0x00;14;4095");
+            + "0x00;14;4095\n");
    }
 
    @Test
@@ -116,7 +116,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;9;2047\n"
             + "0x00;12;2047\n"
             + "0x00;1;4095\n"
-            + "0x00;4;4095");
+            + "0x00;4;4095\n");
    }
 
    @Test
@@ -133,7 +133,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;6;2047\n"
             + "0x00;9;2047\n"
             + "0x00;12;2047\n"
-            + "0x00;4;4095");
+            + "0x00;4;4095\n");
    }
 
    @Test
@@ -155,7 +155,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;1;327\n"
             + "0x00;1;368\n"
             + "0x00;1;409\n"
-            + "0x00;1;409"); // G 10 -> 10
+            + "0x00;1;409\n"); // G 10 -> 10
    }
 
    @Test
@@ -172,7 +172,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;3;2047\n"
             + "0x00;6;2047\n"
             + "0x00;9;2047\n"
-            + "0x00;12;2047");
+            + "0x00;12;2047\n");
    }
 
    @Test
@@ -194,7 +194,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;1;286\n"
             + "0x00;1;327\n"
             + "0x00;1;368\n"
-            + "0x00;1;409");
+            + "0x00;1;409\n");
    }
 
    @Test
@@ -215,7 +215,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;1;286\n"
             + "0x00;1;327\n"
             + "0x00;1;368\n"
-            + "0x00;1;409");
+            + "0x00;1;409\n");
 
       msg.setBody("0;g;15");
       processor.process(ex);
@@ -223,7 +223,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;1;491\n"
             + "0x00;1;532\n"
             + "0x00;1;573\n"
-            + "0x00;1;614");
+            + "0x00;1;614\n");
 
       config.resetRgbLeds();
 
@@ -238,7 +238,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;1;286\n"
             + "0x00;1;327\n"
             + "0x00;1;368\n"
-            + "0x00;1;409");
+            + "0x00;1;409\n");
    }
 
    @Test
@@ -285,7 +285,7 @@ public class RgbLedBatchProcessorTest {
             + "0x00;1;491\n"
             + "0x00;1;532\n"
             + "0x00;1;573\n"
-            + "0x00;1;614");
+            + "0x00;1;614\n");
    }
 
    @Test
@@ -347,6 +347,6 @@ public class RgbLedBatchProcessorTest {
             + "0x00;12;286\n"
             + "0x00;12;327\n"
             + "0x00;12;368\n"
-            + "0x00;12;409");
+            + "0x00;12;409\n");
    }
 }

@@ -37,7 +37,6 @@ public class RgbLedBatchProcessor implements Processor {
    public static final String BATCH_DELAY_HEADER = "delay";
 
    private Configuration config = Configuration.getInstance();
-   private boolean batchAppendNewLine;
 
    @Override
    public void process(final Exchange exchange) throws Exception {
@@ -51,8 +50,10 @@ public class RgbLedBatchProcessor implements Processor {
          smoothChange = Boolean.valueOf((String) smoothChangeHeader);
       }
 
-      batchAppendNewLine = false;
       for (String batchLine : batchLines) {
+         if (batchLine.trim().isEmpty()) {
+            continue;
+         }
          // input message batch line "<led>;<channel(r,g,b)>;<value(0-100)>"
          //TODO: add batch line format validation
          if (log.isDebugEnabled()) {
@@ -82,7 +83,7 @@ public class RgbLedBatchProcessor implements Processor {
       long delay = 0;
       if (delayHeader != null) {
          delay = Long.valueOf((String) delayHeader);
-         if(delay > 0){
+         if (delay > 0) {
             msg.setHeader("batchDelay", delay);
          }
       }
@@ -113,21 +114,16 @@ public class RgbLedBatchProcessor implements Processor {
             log.debug("Smoothing LED's (" + led + ") channel (" + channel + ") value change from " + originalValue + " to " + targetValue);
          }
          for (int smoothedValue = originalValue + step; smoothedValue != targetValue + step; smoothedValue += step) {
-            if (batchAppendNewLine) {
-               batch.append("\n");
-            } else {
-               batchAppendNewLine = true;
-            }
             batch.append(i2cAddress); // I2C address
             batch.append(";");
             batch.append(rgbLedPwm); // pwm output
             batch.append(";");
             batch.append((int) (40.95 * smoothedValue)); // pwm value
+            batch.append("\n");
             if (log.isDebugEnabled()) {
                log.debug("Smoothed value: " + smoothedValue);
             }
          }
-         batchAppendNewLine = false;
          config.setRgbLedValue(led, channel, value);
       } else {
          batch.append(i2cAddress); // I2C address
@@ -135,16 +131,11 @@ public class RgbLedBatchProcessor implements Processor {
          batch.append(rgbLedPwm); // pwm output
          batch.append(";");
          batch.append((int) (40.95 * value)); // pwm value
+         batch.append("\n");
       }
 
       if (log.isDebugEnabled()) {
          log.debug("Appending to PWM batch: [" + batch.toString() + "]");
-      }
-
-      if (batchAppendNewLine) {
-         pwmBatch.append("\n");
-      } else {
-         batchAppendNewLine = true;
       }
       pwmBatch.append(batch);
    }
