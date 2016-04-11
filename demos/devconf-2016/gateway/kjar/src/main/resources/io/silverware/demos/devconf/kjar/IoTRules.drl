@@ -29,10 +29,6 @@ declare RfidAction
   @role( event )
 end
 
-declare window GreenRfids
-  RfidAction(rfid == "C0686400") over window:time (30s) from entry-point "actions"
-end
-
 rule "Weather action"
 when
    $weather: WeatherAction() from entry-point "actions"
@@ -249,13 +245,10 @@ then
 end
 
 rule "Green RFID"
-salience -100
+salience 1
 when
-   Number( intValue == 1 ) from accumulate (
-      $rfid: RfidAction() from window GreenRfids,
-      count($rfid)
-   )
-   eval( !("50".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G"))) )
+   $rfid1: RfidAction(rfid == "C0686400") from entry-point "actions"
+   eval( !("20".equals(cache.get("io.silverware.demos.devconf.kjar.LightCommand.ALL.G"))) )
 then
    System.out.println("GREEN mode");
    System.out.println(cache);
@@ -264,13 +257,11 @@ end
 
 rule "Green Again"
 when
-   Number( intValue >= 2 ) from accumulate (
-      $rfid: RfidAction() from window GreenRfids,
-      count($rfid)
-   )
+   $rfid1: RfidAction(rfid == "C0686400") from entry-point "actions"
+   $rfid2: RfidAction(rfid == "C0686400", this after [1s, 30s] $rfid1) from entry-point "actions"
 then
    System.out.println("GREEN Again");
-   channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 50, 0)));
+   channels["commands"].send(new LightCommand(LightCommand.Place.ALL, new LedState(0, 20, 0)));
 end
 
 rule "Blue RFID"
