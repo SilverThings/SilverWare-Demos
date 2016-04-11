@@ -19,7 +19,6 @@
  */
 package io.silverware.demos.devconf2016.intelligent_home.routes;
 
-import io.silverware.demos.devconf2016.intelligent_home.processors.AllRgbLedsProcessor;
 import io.silverware.demos.devconf2016.intelligent_home.processors.RgbLedBatchProcessor;
 
 /**
@@ -29,7 +28,6 @@ public class RgbLedRouteBuilder extends IntelligentHomeRouteBuilder {
    @Override
    public void configure() throws Exception {
       final RgbLedBatchProcessor rgbLedBatchProcessor = new RgbLedBatchProcessor();
-      final AllRgbLedsProcessor allRgbLedsProcessor = new AllRgbLedsProcessor();
 
       // direct routes
       from("direct:led-set-batch")
@@ -47,8 +45,12 @@ public class RgbLedRouteBuilder extends IntelligentHomeRouteBuilder {
             ))
             .to("direct:led-set-batch");
 
+      final String allLed = Integer.toString(0xFFFF);
       from(restBaseUri() + "/led/setrgb/all?httpMethodRestrict=GET")
-            .process(allRgbLedsProcessor)
+            .setBody(simple(allLed + ";r;${header.r}\n"
+                  + allLed + ";g;${header.g}\n"
+                  + allLed + ";b;${header.b}\n"
+            ))
             .to("direct:led-set-batch");
    }
 }
