@@ -19,7 +19,7 @@ public final class Configuration {
    private static final String SERVO_PREFIX = "servo";
 
    public static final int RGB_LED_COUNT = 15;
-   public static final int PCA9685_COUNT = 3;
+   public static final int PCA9685_COUNT = 4;
    public static final int SERVO_COUNT = 2;
 
    public static final String CONFIG_FILE = "/home.conf";

@@ -28,7 +28,11 @@ public class ResetRouteBuilder extends IntelligentHomeRouteBuilder {
    public void configure() throws Exception {
       from("direct:reset")
             .setHeader("address", simple("0x70"))
-            .to("direct:pca9685-reset")
+            .to("direct:pca9685-led-reset")
+            .setHeader("address", simple(config.getServoPca9685Address(0)))
+            .to("direct:pca9685-servo-reset")
+            .setHeader("address", simple(config.getServoPca9685Address(1)))
+            .to("direct:pca9685-servo-reset")
             .to("direct:fireplace-off")
             .to("direct:ac-off")
             .to("direct:tv-reset");
