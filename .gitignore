@@ -9,3 +9,7 @@ buildNumber.properties
 .idea
 *.log*
 *.iml
+
+#ActiveMQ
+activemq-data
+data

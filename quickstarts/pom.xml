@@ -49,6 +49,9 @@
       <module>deltaspike-config</module>
       <module>camel-cdi-helloworld</module>
       <module>camel-jetty-cdi</module>
+      <module>activemq-jms-annotation</module>
+      <module>activemq-jndi</module>
+      <module>activemq-secured</module>
    </modules>
    <dependencyManagement>
       <dependencies>
