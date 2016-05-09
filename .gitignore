@@ -13,3 +13,6 @@ buildNumber.properties
 #ActiveMQ
 activemq-data
 data
+
+#Vertx
+.vertx

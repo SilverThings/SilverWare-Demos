@@ -52,6 +52,10 @@
       <module>activemq-jms-annotation</module>
       <module>activemq-jndi</module>
       <module>activemq-secured</module>
+      <module>vertx-deployment-options</module>
+      <module>vertx-groovy-helloworld</module>
+      <module>vertx-helloworld</module>
+      <module>vertx-xml-helloworld</module>
    </modules>
    <dependencyManagement>
       <dependencies>

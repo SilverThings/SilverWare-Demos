@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vertx>
+    <verticles>
+        <verticle config="src/main/resources/example.json">javascriptVerticle.js</verticle>
+    </verticles>
+</vertx>
