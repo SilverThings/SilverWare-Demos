@@ -1,12 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <parent>
-      <groupId>io.silverware.demos.quickstarts</groupId>
       <artifactId>quickstarts-parent</artifactId>
+      <groupId>io.silverware.demos.quickstarts</groupId>
       <version>2.1-SNAPSHOT</version>
    </parent>
-   <artifactId>camel-helloworld-xml</artifactId>
+   <modelVersion>4.0.0</modelVersion>
+
+   <artifactId>vertx-helloworld</artifactId>
    <packaging>jar</packaging>
+
    <dependencies>
       <dependency>
          <groupId>io.silverware</groupId>
@@ -14,11 +19,11 @@
       </dependency>
       <dependency>
          <groupId>io.silverware</groupId>
-         <artifactId>camel-microservice-provider</artifactId>
+         <artifactId>cdi-microservice-provider</artifactId>
       </dependency>
       <dependency>
-         <groupId>org.apache.camel</groupId>
-         <artifactId>camel-stream</artifactId>
+         <groupId>io.silverware</groupId>
+         <artifactId>vertx-microservice-provider</artifactId>
       </dependency>
    </dependencies>
    <build>
@@ -30,4 +35,5 @@
          </plugin>
       </plugins>
    </build>
+
 </project>
