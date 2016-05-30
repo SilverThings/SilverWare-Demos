@@ -47,13 +47,17 @@ public class ActiveMQAnnotationMicroservice {
    @JMS(serverUri = "vm://0", initialContextFactory = org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory.class)
    private JMSContext jmsContext;
 
+   private static ExecutorService executorService;
+
+   static {
+      ThreadFactory deamonThreadFactory = new ThreadFactoryBuilder().setDaemon(true).build();
+      executorService = Executors.newCachedThreadPool(deamonThreadFactory);
+   }
+
    public void observer(@Observes MicroservicesStartedEvent event) throws Exception {
       log.info("Hello from " + this.getClass().getSimpleName());
 
       //start async task
-      ThreadFactory deamonThreadFactory = new ThreadFactoryBuilder().setDaemon(true).build();
-      ExecutorService executorService = Executors.newFixedThreadPool(1, deamonThreadFactory);
-
       CompletableFuture future = CompletableFuture.supplyAsync(() -> {
          try {
             //start embedded broker instance
