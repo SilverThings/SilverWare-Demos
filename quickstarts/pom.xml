@@ -59,6 +59,7 @@
       <module>vertx-xml-helloworld</module>
       <module>rest-client-helloworld</module>
       <module>http-server-helloworld</module>
+      <module>hystrix-helloworld</module>
    </modules>
    <dependencyManagement>
       <dependencies>
