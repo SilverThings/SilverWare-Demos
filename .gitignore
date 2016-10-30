@@ -16,3 +16,9 @@ data
 
 #Vertx
 .vertx
+
+# Eclipse
+.classpath
+.project
+.settings
+
