@@ -8,10 +8,10 @@
       <groupId>io.silverware.demos.quickstarts</groupId>
       <version>2.1-SNAPSHOT</version>
    </parent>
-   <artifactId>rest-client-helloworld</artifactId>
+   <artifactId>http-server-helloworld</artifactId>
    <packaging>jar</packaging>
-   
-   <description>This quickstarts demonstrates the use of rest client microservice provider.</description>
+
+   <description>This quickstarts demonstrates the use of http server microservice provider.</description>
 
    <dependencies>
       <dependency>
@@ -21,10 +21,6 @@
       <dependency>
          <groupId>io.silverware</groupId>
          <artifactId>cdi-microservice-provider</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>io.silverware</groupId>
-         <artifactId>rest-client-microservice-provider</artifactId>
       </dependency>
       <dependency>
          <groupId>io.silverware</groupId>
@@ -41,5 +37,6 @@
          </plugin>
       </plugins>
    </build>
+
 
 </project>

@@ -1,4 +1,4 @@
-package io.silverware.demos.quickstrarts;
+package io.silverware.demos.quickstarts.httpserver;
 
 import io.silverware.microservices.annotations.Microservice;
 
@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
  */
 @Microservice
 @Path("/hello_service")
-public class HelloRestService {
+public class HelloworldRestService {
    @Path("hello")
    @GET
    @Produces(MediaType.TEXT_PLAIN)

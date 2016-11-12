@@ -1,4 +1,4 @@
-package io.silverware.demos.quickstrarts;
+package io.silverware.demos.quickstarts.restclient;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

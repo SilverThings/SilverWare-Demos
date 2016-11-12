@@ -58,6 +58,7 @@
       <module>vertx-helloworld</module>
       <module>vertx-xml-helloworld</module>
       <module>rest-client-helloworld</module>
+      <module>http-server-helloworld</module>
    </modules>
    <dependencyManagement>
       <dependencies>

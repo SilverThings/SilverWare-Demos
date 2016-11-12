@@ -1,4 +1,4 @@
-package io.silverware.demos.quickstrarts;
+package io.silverware.demos.quickstarts.restclient;
 
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
