@@ -21,40 +21,52 @@ package io.silverware.demos.quickstarts.cdi;
 
 import static java.util.UUID.randomUUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.inject.Inject;
-
-import java.util.Random;
-
 import io.silverware.demos.quickstarts.cdi.CustomObject.BrokenInnerClass;
-import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
 import io.silverware.microservices.annotations.MicroserviceReference;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Random;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 /**
+ * http://localhost:8080/silverware/rest/RestEndpoint/cdiHello
+ *
  * @author Slavomír Krupa (slavomir.krupa@gmail.com)
  */
-@Gateway
+@Path("RestEndpoint")
 @Microservice
+@Dependent
 public class RestEndpoint {
 
-	private static final Logger log = LogManager.getLogger(RestEndpoint.class);
+   private static final Logger log = LogManager.getLogger(RestEndpoint.class);
 
-	@Inject
-	@MicroserviceReference
-	private ClusteredHelloWorldService other;
+   @Inject
+   @MicroserviceReference
+   private ClusteredHelloWorldService other;
 
-	public void cdiHello() {
-		Random rnd = new Random();
-		log.info("start cdi calls");
-		other.hello();
-		log.info("Addition result is: {} ", other.magicCount(rnd.nextInt(10), rnd.nextInt(10)));
-		log.info("Multiplication result is: {} ", other.magicCount(rnd.nextInt(10), new Integer(rnd.nextInt(10))));
-		log.info("Custom class call result is: {} ", other.customSerialization(new CustomObject(rnd.nextInt(10), randomUUID().toString(), rnd.nextFloat() % 100, new BrokenInnerClass(randomUUID()))));
-		log.info("Custom class call with null parameter result is: {} ", other.customSerialization(null));
-		log.info("end cdi calls");
-	}
+   @GET
+   @Path("cdiHello")
+   @Produces(MediaType.TEXT_PLAIN)
+   public String cdiHello() {
+      Random rnd = new Random();
+      //      OtherClass o = new OtherClass();
+      //      o.hello();
+      log.info("start cdi calls");
+      other.hello();
+      log.info("Addition result is: {} ", other.magicCount(rnd.nextInt(10), rnd.nextInt(10)));
+      log.info("Multiplication result is: {} ", other.magicCount(rnd.nextInt(10), new Integer(rnd.nextInt(10))));
+      log.info("Custom class call result is: {} ", other.customSerialization(new CustomObject(rnd.nextInt(10), randomUUID().toString(), rnd.nextFloat() % 100, new BrokenInnerClass(randomUUID()))));
+      log.info("Custom class call with null parameter result is: {} ", other.customSerialization(null));
+      log.info("end cdi calls");
+      return "OK";
+   }
 
 }
