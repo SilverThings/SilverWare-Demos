@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <parent>
+      <artifactId>quickstarts-parent</artifactId>
+      <groupId>io.silverware.demos.quickstarts</groupId>
+      <version>2.1-SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+
+   <artifactId>openshift-base</artifactId>
+   <packaging>pom</packaging>
+
+   <properties>
+
+      <kubernetes.project>silverware</kubernetes.project>
+      <fabric8.namespace>${kubernetes.project}</fabric8.namespace>
+   </properties>
+   <modules>
+      <module>openshift-gateway</module>
+      <module>openshift-cluster-worker</module>
+      <module>openshift-core</module>
+   </modules>
+
+   <dependencies>
+      <dependency>
+         <groupId>io.silverware</groupId>
+         <artifactId>microservices</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>io.silverware</groupId>
+         <artifactId>cdi-microservice-provider</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>io.silverware</groupId>
+         <artifactId>cluster-microservice-provider</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>io.silverware</groupId>
+         <artifactId>http-server-microservice-provider</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.jgroups.kubernetes</groupId>
+         <artifactId>kubernetes</artifactId>
+         <version>0.9.0</version>
+         <scope>runtime</scope>
+      </dependency>
+   </dependencies>
+   <profiles>
+      <profile>
+         <id>standalone</id>
+         <build>
+            <plugins>
+
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <version>${version.maven.dependency.plugin}</version>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>openshift</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-jar-plugin</artifactId>
+                  <version>${version.maven.jar.plugin}</version>
+                  <configuration>
+                     <archive>
+                        <manifest>
+                           <addClasspath>true</addClasspath>
+                           <mainClass>io.silverware.microservices.Boot</mainClass>
+                           <classpathPrefix>/deployments/</classpathPrefix>
+                        </manifest>
+                        <manifestEntries>
+                           <Specification-Version>${project.version}</Specification-Version>
+                           <Implementation-Version>${project.version}</Implementation-Version>
+                        </manifestEntries>
+                     </archive>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <artifactId>maven-resources-plugin</artifactId>
+                  <version>3.0.2</version>
+                  <executions>
+                     <execution>
+                        <id>copy-resources</id>
+                        <!-- here the phase you need -->
+                        <phase>validate</phase>
+                        <goals>
+                           <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                           <outputDirectory>${basedir}/target/docker/silverware/${project.artifactId}/${project.version}/build/maven</outputDirectory>
+                           <resources>
+                              <resource>
+                                 <directory>src/main/resources</directory>
+                                 <includes>
+                                    <include>*.xml</include>
+                                    <include>*.properties</include>
+                                 </includes>
+                                 <filtering>true</filtering>
+                              </resource>
+                           </resources>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>io.fabric8</groupId>
+                  <artifactId>fabric8-maven-plugin</artifactId>
+                  <version>3.2.10</version>
+                  <configuration>
+                     <images>
+                        <image>
+                           <name>silverware/${project.artifactId}:${project.version}</name>
+                           <alias>${project.artifactId}</alias>
+                           <build>
+                              <from>fabric8/s2i-java:latest</from>
+                              <assembly>
+                                 <basedir>/deployments</basedir>
+                                 <descriptorRef>artifact-with-dependencies</descriptorRef>
+                              </assembly>
+
+                              <env>
+                                 <JAVA_LIB_DIR>/deployments</JAVA_LIB_DIR>
+                                 <JAVA_MAIN_CLASS>io.silverware.microservices.Boot -p silverware.properties</JAVA_MAIN_CLASS>
+                                 <JAVA_APP_JAR>/deployments/${project.artifactId}-${project.version}.jar</JAVA_APP_JAR>
+                                 <!--Just namespace is necessary-->
+                                 <OPENSHIFT_KUBE_PING_NAMESPACE>${kubernetes.project}</OPENSHIFT_KUBE_PING_NAMESPACE>
+                              </env>
+                              <ports>
+                                 <port>8080</port>
+                                 <port>8778</port>
+                                 <port>8888</port>
+                                 <port>7800</port>
+                              </ports>
+                              <tags>
+                                 <tag>latest</tag>
+                                 <tag>${project.version}</tag>
+                              </tags>
+
+
+                           </build>
+                        </image>
+                     </images>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <id>fmp</id>
+                        <goals>
+                           <goal>resource</goal>
+                           <goal>build</goal>
+                           <goal>apply</goal>
+                           <goal>start</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+
+
+</project>

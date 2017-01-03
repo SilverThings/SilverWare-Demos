@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <parent>
+      <artifactId>openshift-base</artifactId>
+      <groupId>io.silverware.demos.quickstarts</groupId>
+      <version>2.1-SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <properties>
+      <fabric8.replicas>3</fabric8.replicas>
+   </properties>
+
+   <artifactId>openshift-cluster-worker</artifactId>
+   <dependencies>
+      <dependency>
+         <groupId>io.silverware.demos.quickstarts</groupId>
+         <artifactId>openshift-core</artifactId>
+         <version>2.1-SNAPSHOT</version>
+      </dependency>
+   </dependencies>
+
+
+</project>

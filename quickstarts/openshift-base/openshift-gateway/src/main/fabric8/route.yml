@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: openshift-gateway
+spec:
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: openshift-gateway
+    weight: 100

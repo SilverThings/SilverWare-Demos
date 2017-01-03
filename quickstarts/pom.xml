@@ -60,6 +60,7 @@
       <module>rest-client-helloworld</module>
       <module>http-server-helloworld</module>
       <module>hystrix-helloworld</module>
+      <module>openshift-base</module>
    </modules>
    <dependencyManagement>
       <dependencies>
