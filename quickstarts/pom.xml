@@ -49,6 +49,7 @@
       <module>camel-helloworld-xml</module>
       <module>deltaspike-config</module>
       <module>camel-cdi-helloworld</module>
+      <module>cluster-cdi-helloworld</module>
       <module>camel-jetty-cdi</module>
       <module>activemq-jms-annotation</module>
       <module>activemq-jndi</module>

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: cluster-cdi-helloworld
+spec:
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: cluster-cdi-helloworld
+    weight: 100
