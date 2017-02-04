@@ -19,23 +19,18 @@
  */
 package io.silverware.demos.quickstarts.cdi;
 
-import io.silverware.microservices.annotations.Gateway;
 import io.silverware.microservices.annotations.Microservice;
-import io.silverware.microservices.annotations.MicroserviceReference;
 import io.silverware.microservices.providers.cdi.MicroservicesStartedEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>
  */
 @Microservice
-@Gateway
 public class CdiHelloWorldMicroservice {
 
    private static final Logger log = LogManager.getLogger(CdiHelloWorldMicroservice.class);
@@ -53,7 +48,7 @@ public class CdiHelloWorldMicroservice {
       log.info("CdiHelloWorldMicroservice Hello");
    }
 
-   public void eventObserver(@Observes MicroservicesStartedEvent event) {
+   public void eventObserver(@Observes final MicroservicesStartedEvent event) {
       log.info("CdiHelloWorldMicroservice MicroservicesStartedEvent");
    }
 }
